@@ -1,0 +1,191 @@
+/*
+ * ------------------------------------------------------------------------
+ * SHARED ADMIN TOKENS
+ * ------------------------------------------------------------------------
+ *
+ * This block is identical in every Dahu plugin, deliberately. The plugins
+ * are independent — each has to work with none of the others installed — so
+ * they cannot share a stylesheet, and the only way for their screens to
+ * look like one family is for each to declare the same tokens under the
+ * same names. A shop running three of them sees one interface rather than
+ * three.
+ *
+ * Values follow WordPress's own admin palette rather than inventing a
+ * brand: a plugin screen that ignores the admin it lives in reads as a
+ * foreign object, however well designed it is on its own.
+ *
+ * The `--dahu-admin-` prefix is what makes a declaration on :root safe
+ * here. Two plugins declaring it write the same values, so neither can
+ * surprise the other, and nothing outside the family can collide with it.
+ *
+ * Single source of truth: /Dev/dahu-public/UI-ADMIN-DAHU.md
+ */
+
+:root {
+	/* Surfaces */
+	--dahu-admin-surface: #fff;
+	--dahu-admin-surface-sunken: #f6f7f7;
+	--dahu-admin-border: #dcdcde;
+	--dahu-admin-border-strong: #c3c4c7;
+
+	/* Text */
+	--dahu-admin-text: #1d2327;
+	--dahu-admin-text-muted: #646970;
+
+	/* Intent */
+	--dahu-admin-accent: #2271b1;
+	--dahu-admin-accent-text: #fff;
+	--dahu-admin-success: #008a20;
+	--dahu-admin-warning: #b32d2e;
+	--dahu-admin-caution: #996800;
+	--dahu-admin-neutral: #50575e;
+
+	/* Shape */
+	--dahu-admin-radius: 4px;
+	--dahu-admin-radius-lg: 6px;
+	--dahu-admin-shadow: 0 1px 2px rgba( 0, 0, 0, .06 );
+	--dahu-admin-shadow-lg: 0 6px 20px rgba( 0, 0, 0, .16 );
+
+	/* Rhythm */
+	--dahu-admin-gap: 8px;
+	--dahu-admin-gap-lg: 14px;
+
+	/* Reading widths */
+	--dahu-admin-measure: 900px;
+	--dahu-admin-measure-wide: 1100px;
+
+	/* Motion. Short, and switched off below for anybody who asked. */
+	--dahu-admin-transition: .15s ease;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+
+	:root {
+		--dahu-admin-transition: 0s;
+	}
+}
+
+/* ------------------------------------------------------------------------
+ * The snapshots screen
+ * ------------------------------------------------------------------------ */
+
+.dahu-rb-table {
+	max-width: var( --dahu-admin-measure );
+}
+
+.dahu-rb-col-label {
+	width: 280px;
+}
+
+.dahu-rb-col-label--wide {
+	width: 320px;
+}
+
+.dahu-rb-form {
+	margin: 20px 0;
+}
+
+.dahu-rb-form--spaced {
+	margin-top: 20px;
+}
+
+/*
+ * The full-restore form, set apart by a rule.
+ *
+ * Separated visually because it is the one action on this screen that can
+ * DELETE roles. Sitting flush under the additive restore it looked like one
+ * more variant of it.
+ */
+.dahu-rb-form--danger {
+	margin-top: 28px;
+	padding-top: 16px;
+	border-top: 1px solid var( --dahu-admin-border );
+}
+
+.dahu-rb-heading-flush {
+	margin-top: 0;
+}
+
+/*
+ * Something missing, or about to be lost: no snapshot at all, no scheduled
+ * run, a role the full restore would delete.
+ */
+.dahu-rb-warning {
+	color: var( --dahu-admin-warning );
+}
+
+/*
+ * The star marking the snapshot that pruning will not touch.
+ *
+ * Uses the caution token for its amber, read here as the gold of a starred
+ * item rather than as a caution — a star saying "this one is kept" is good
+ * news, not a problem. A token of its own for one star in one plugin would
+ * mean editing the shared block in eight files; naming the class for what it
+ * means costs nothing and says the same thing.
+ */
+.dahu-rb-protected {
+	color: var( --dahu-admin-caution );
+}
+
+/* --- The one-line introduction under the page title ------------------- */
+
+/*
+ * Every Dahu screen carries one, and it is the same rule everywhere. A lede
+ * that runs the full width of a 1920px screen is not read; the reading measure
+ * is what makes it a sentence rather than a banner.
+ */
+.dahu-role-backup__intro {
+	max-width: var( --dahu-admin-measure );
+	margin: 0 0 var( --dahu-admin-gap-lg );
+	color: var( --dahu-admin-text-muted );
+	font-size: 14px;
+}
+
+/* --- The snapshot list ------------------------------------------------- */
+
+/*
+ * Capped at the wide reading measure. On a 2560px monitor a full-width table
+ * puts the date at one edge and its action at the other, and the eye has to
+ * cross the screen to join them.
+ */
+.dahu-rb-snapshots {
+	max-width: var( --dahu-admin-measure-wide );
+}
+
+/*
+ * A row action is a link, not an outlined button. See UI-ADMIN-DAHU.md: the
+ * previous version stacked thirty-five identical buttons, which ranked
+ * nothing and set the column width into the bargain.
+ */
+.dahu-rb-snapshots__action {
+	white-space: nowrap;
+	text-align: right;
+}
+
+/*
+ * The table root is in the selector so the header aligns with its own
+ * numbers: WordPress styles `.widefat th` at a higher specificity, so a bare
+ * class left the heading over on the left while the figures sat on the right.
+ * Seen in a browser, not assumed.
+ */
+.dahu-rb-snapshots th.dahu-rb-snapshots__num,
+.dahu-rb-snapshots td.dahu-rb-snapshots__num {
+	width: 6em;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.dahu-rb-snapshots__size {
+	color: var( --dahu-admin-text-muted );
+	font-variant-numeric: tabular-nums;
+}
+
+.dahu-rb-protected {
+	color: var( --dahu-admin-caution );
+}
+
+.dahu-rb-legend {
+	max-width: var( --dahu-admin-measure );
+	margin-top: var( --dahu-admin-gap );
+	color: var( --dahu-admin-text-muted );
+}
