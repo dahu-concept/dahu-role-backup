@@ -345,3 +345,39 @@ function dahu_role_backup_diff( $snapshot ) {
     );
 }
 
+
+/**
+ * Why a snapshot was taken, in one sentence, when the reason is a rescue.
+ *
+ * Returns an empty string for an ordinary daily, change or manual snapshot:
+ * there is nothing to say about those, and a screen that explains every row
+ * explains nothing.
+ *
+ * @param string $file Snapshot file name.
+ * @return string
+ */
+function dahu_role_backup_rescue_reason( $file ) {
+    $snapshot = dahu_role_backup_load( $file );
+
+    if ( is_wp_error( $snapshot ) || ! is_array( $snapshot ) ) {
+        return '';
+    }
+
+    $event = isset( $snapshot['evenement'] ) ? (string) $snapshot['evenement'] : '';
+
+    if ( 'copie_perimee' !== $event ) {
+        return '';
+    }
+
+    $lost = isset( $snapshot['roles_perdus'] ) ? (array) $snapshot['roles_perdus'] : array();
+
+    if ( ! $lost ) {
+        return __( 'Taken because a write was about to erase roles that were still stored.', 'dahu-role-backup' );
+    }
+
+    return sprintf(
+        /* translators: %s: comma-separated list of role slugs. */
+        __( 'Taken because a write was about to erase roles that were still stored: %s.', 'dahu-role-backup' ),
+        implode( ', ', array_map( 'sanitize_key', $lost ) )
+    );
+}

@@ -4,7 +4,7 @@ Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -102,6 +102,16 @@ roles option is actually written, which on a normal site is rare.
 
 == Changelog ==
 
+= 2.1.0 =
+* Watches for the one way roles disappear without anything failing: a request
+  writing back its own older copy of the roles option, which erases a role
+  another request created in the meantime. The stored row is read directly,
+  because the copy the request holds cannot show it.
+* A snapshot taken for that reason is marked as a rescue and names the roles
+  that were about to be lost.
+* No cost on the frequent case: a write that changes nothing performs no extra
+  query.
+
 = 2.0.0 =
 * First public release, extracted from a larger plugin.
 * Snapshot directory is now filterable, and falls back to the uploads directory
@@ -109,6 +119,10 @@ roles option is actually written, which on a normal site is rare.
 * Own screen under Tools, instead of a tab in another plugin's settings.
 
 == Upgrade Notice ==
+
+= 2.1.0 =
+Catches roles erased by a stale copy of the roles option, which nothing else
+reports.
 
 = 2.0.0 =
 First public release.

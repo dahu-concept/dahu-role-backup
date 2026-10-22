@@ -32,6 +32,21 @@ disappearances would rotate the retention until no copy held the lost roles any
 more: the safety net would quietly empty itself at exactly the moment it was
 needed.
 
+### The role that disappears without anything going wrong
+
+The usual way roles vanish is not a bug anybody can see. WordPress keeps every
+role in one option, and adding a single capability rewrites the whole of it from
+the copy the current request loaded when it started. So a request that began
+before another one created a role will, the moment it adds any capability,
+write its own older copy back over the top — and the new role is gone. Nothing
+failed. Nothing was logged.
+
+This plugin watches for exactly that, by reading the stored row directly instead
+of trusting the copy the request is holding, which is the only way to see it.
+When a write is about to drop roles that are still in the database, a snapshot
+is taken **from the database** first, marked as a rescue, naming the roles that
+were about to go.
+
 ## Storage
 
 Under `wp-content/dahu-role-backups/`, not in uploads, which is served by the

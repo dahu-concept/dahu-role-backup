@@ -50,6 +50,136 @@ function dahu_role_backup_run_daily() {
 add_action( 'plugins_loaded', 'dahu_role_backup_register_watcher', 1 );
 function dahu_role_backup_register_watcher() {
     add_action( 'update_option_' . dahu_role_backup_option_name(), 'dahu_role_backup_on_option_update', 10, 3 );
+
+    // PHP_INT_MAX: last, so the value seen is the one that will be written
+    // after every other filter has had its say.
+    add_filter( 'pre_update_option_' . dahu_role_backup_option_name(), 'dahu_role_backup_before_option_write', PHP_INT_MAX, 3 );
+}
+
+/**
+ * The write that the watcher above cannot see, and the reason this one exists.
+ *
+ * `update_option_{option}` receives `$old_value` — and `$old_value` comes from
+ * the `get_option()` of the SAME request. That is the whole problem, and it is
+ * not a theoretical one:
+ *
+ *     t0  request A starts and loads the roles into memory (no `sav` yet)
+ *     t1  request B creates the role `sav` and writes it to the database
+ *     t2  request A calls add_cap() -> rewrites ITS copy from t0
+ *         -> `sav` is erased, silently
+ *
+ * `WP_Role::add_cap()` does not write one capability. It hands over to
+ * `WP_Roles::add_cap()`, which writes **the entire roles array** from the
+ * in-memory copy loaded once at the start of the request. So adding a single
+ * capability rewrites the whole table from a copy that may be minutes old. No
+ * object cache is needed for this; a persistent one only widens the window.
+ *
+ * In that request, `$old_value` and `$new_value` BOTH lack `sav`. The diff is
+ * empty, the watcher above leaves immediately, and no snapshot is written —
+ * while the role really does disappear from the database. Diagnosed in
+ * production on a shop where a premium plugin called `add_cap()` dozens of
+ * times per second on `admin-ajax.php`; the first version of the diagnostic
+ * tool had this same blindness and recorded nothing for weeks.
+ *
+ * So this filter compares the incoming value with **the database, read
+ * directly**, past the object cache. That is the only reading that knows what
+ * is about to be lost.
+ *
+ * ## What it costs
+ *
+ * One `SELECT` per **real** write of the roles option, and nothing at all
+ * otherwise. The no-op writes — the capability is already there, the value is
+ * unchanged — leave on a string comparison before any SQL, which matters
+ * because those are the frequent ones: `pre_update_option` fires *before*
+ * `update_option()`'s own short-circuit, so without that exit this filter
+ * would run a query on every one of those dozens of calls per second.
+ *
+ * ## What it never does
+ *
+ * Modify the value. It returns exactly what it was given, including when
+ * something fails: a backup plugin that corrupted a roles write while trying
+ * to protect it would be worse than no backup plugin. Everything is wrapped,
+ * and a failure goes to the log and nowhere else.
+ *
+ * @param mixed  $value     Value about to be written.
+ * @param mixed  $old_value Value as this request read it. Deliberately not trusted.
+ * @param string $option    Option name.
+ * @return mixed $value, untouched.
+ */
+function dahu_role_backup_before_option_write( $value, $old_value, $option ) {
+    try {
+        if ( ! is_array( $value ) ) {
+            return $value;
+        }
+
+        // A write that changes nothing, which is the common case on a shop
+        // where something calls add_cap() in a loop. Compared serialised
+        // because two role arrays differ by key order often enough that `==`
+        // would be a lie in both directions.
+        if ( maybe_serialize( $value ) === maybe_serialize( $old_value ) ) {
+            return $value;
+        }
+
+        global $wpdb;
+
+        $raw = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- reading past the object cache is the entire point.
+            $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", $option )
+        );
+
+        if ( null === $raw ) {
+            return $value;
+        }
+
+        $database = maybe_unserialize( $raw );
+
+        if ( ! is_array( $database ) || empty( $database ) ) {
+            return $value;
+        }
+
+        $lost = array_values( array_diff( dahu_role_backup_slugs( $database ), dahu_role_backup_slugs( $value ) ) );
+
+        if ( empty( $lost ) ) {
+            return $value;
+        }
+
+        // Something is about to be lost. Now: was it meant?
+        //
+        // A deliberate removal — our own screen, a plugin cleaning up on
+        // uninstall — happens in a request whose copy matches the database,
+        // and `update_option_{option}` already logs it and freezes the state
+        // before it. Saying it twice, once in alarming words, would teach a
+        // shop to ignore the alarming words.
+        //
+        // A stale copy is the other case, and it is the one nobody ever sees:
+        // the request did not intend to remove anything, it simply did not
+        // know the role existed.
+        $stale = maybe_serialize( $old_value ) !== $raw;
+
+        if ( ! $stale ) {
+            return $value;
+        }
+
+        dahu_role_backup_log( sprintf(
+            '!!! ROLES ABOUT TO BE LOST BY A STALE COPY !!! %1$s | in the database (%2$d): %3$s | in the write (%4$d): %5$s | %6$s',
+            implode( ', ', $lost ),
+            count( dahu_role_backup_slugs( $database ) ),
+            implode( ', ', dahu_role_backup_slugs( $database ) ),
+            count( dahu_role_backup_slugs( $value ) ),
+            implode( ', ', dahu_role_backup_slugs( $value ) ),
+            dahu_role_backup_context()
+        ) );
+
+        // The database value, not the one this request holds: the request's
+        // copy is the one that has already lost the role.
+        dahu_role_backup_write( 'change', $database, array(
+            'evenement'    => 'copie_perimee',
+            'roles_perdus' => $lost,
+        ) );
+    } catch ( Throwable $e ) {
+        dahu_role_backup_log( sprintf( 'internal error ignored while watching a roles write: %s (%s:%d)', $e->getMessage(), $e->getFile(), $e->getLine() ) );
+    }
+
+    return $value;
 }
 
 /**

@@ -35,6 +35,22 @@ cette exception, une série de disparitions répétées ferait tourner la réten
 jusqu'à ce qu'aucune copie ne contienne plus les rôles perdus : le filet de
 sécurité se viderait tout seul exactement au moment où il sert.
 
+### Le rôle qui disparaît sans que rien n'ait échoué
+
+La façon habituelle dont des rôles disparaissent n'est pas un bogue visible.
+WordPress garde tous les rôles dans une seule option, et ajouter une seule
+capacité réécrit la totalité de cette option à partir de la copie que la requête
+en cours a chargée à son démarrage. Une requête commencée avant qu'une autre ne
+crée un rôle va donc, dès qu'elle ajoute une capacité quelconque, réécrire sa
+propre copie plus ancienne par-dessus — et le rôle nouvellement créé n'existe
+plus. Rien n'a échoué. Rien n'a été journalisé.
+
+L'extension surveille précisément ce cas, en lisant la ligne stockée en base
+directement au lieu de se fier à la copie que porte la requête, ce qui est la
+seule façon de le voir. Quand une écriture est sur le point de faire disparaître
+des rôles encore présents en base, un instantané est pris **depuis la base**
+d'abord, marqué comme sauvetage, en nommant les rôles qui allaient partir.
+
 ## Stockage
 
 Sous `wp-content/dahu-role-backups/`, et non dans les téléversements, qui sont

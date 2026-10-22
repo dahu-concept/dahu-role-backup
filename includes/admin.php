@@ -44,10 +44,23 @@ function dahu_role_backup_enqueue_admin_style( $hook ) {
 		return;
 	}
 
+	// The family sheet first, and its own second: the plugin's own rules
+	// are written to sit on top of the shared components, so the order is
+	// a dependency and not a hope. One handle across the family -- the
+	// file is byte-identical everywhere, so whichever plugin loads it
+	// first serves all of them, and a shop with six of these installed
+	// downloads one copy.
+	wp_enqueue_style(
+		'dahu-ui',
+		DAHU_ROLE_BACKUP_URL . 'assets/css/dahu-ui.css',
+		array(),
+		DAHU_ROLE_BACKUP_VERSION
+	);
+
 	wp_enqueue_style(
 		'dahu-role-backup-admin',
 		DAHU_ROLE_BACKUP_URL . 'assets/css/admin.css',
-		array(),
+		array( 'dahu-ui' ),
 		DAHU_ROLE_BACKUP_VERSION
 	);
 }
@@ -204,13 +217,11 @@ function dahu_role_backup_render_page() {
         wp_die( esc_html__( 'You are not allowed to access this page.', 'dahu-role-backup' ) );
     }
 
-    echo '<div class="wrap">';
-    echo '<h1>' . esc_html__( 'Role snapshots', 'dahu-role-backup' ) . '</h1>';
-
-    printf(
-        '<p class="dahu-role-backup__intro">%s</p>',
-        esc_html__( 'Dahu Role Backup keeps a copy of every WordPress role, taken daily and on every change, so a capability lost by mistake can be compared and put back.', 'dahu-role-backup' )
-    );
+    echo '<div class="wrap dahu-ui">';
+    echo '<div class="dahu-ui-head">';
+    echo '<h1 class="dahu-ui-head__title">' . esc_html__( 'Role snapshots', 'dahu-role-backup' ) . '</h1>';
+    echo '<p class="dahu-ui-head__sub">' . esc_html__( 'A copy of every role, taken before anything can lose one.', 'dahu-role-backup' ) . '</p>';
+    echo '</div>';
 
     echo '<hr class="wp-header-end">';
 
@@ -239,7 +250,7 @@ function dahu_role_backup_render_overview() {
     $best    = dahu_role_backup_best_recent( $all );
     $next    = wp_next_scheduled( DAHU_ROLE_BACKUP_CRON );
 
-    echo '<h2>' . esc_html__( 'Status', 'dahu-role-backup' ) . '</h2>';
+    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Status', 'dahu-role-backup' ) . '</h2></div>';
     echo '<table class="widefat dahu-rb-table"><tbody>';
 
     printf(
@@ -301,25 +312,40 @@ function dahu_role_backup_render_overview() {
             : '—'
     );
 
+    // Why that snapshot exists, when it exists because roles were about to be
+    // erased. Read for this one snapshot only, not for the whole list: the
+    // listing works from file names and reading thirty files to decorate a
+    // table would be paid for on every screen load. This is the snapshot
+    // somebody restores from, so this is the one worth a file read.
+    $why = $best ? dahu_role_backup_rescue_reason( $best['file'] ) : '';
+
+    if ( '' !== $why ) {
+        printf(
+            '<tr><th>%1$s</th><td><strong>%2$s</strong></td></tr>',
+            esc_html__( 'Why it was taken', 'dahu-role-backup' ),
+            esc_html( $why )
+        );
+    }
+
     printf(
         '<tr><th>%1$s</th><td><code>%2$s</code></td></tr>',
         esc_html__( 'Directory', 'dahu-role-backup' ),
         esc_html( dahu_role_backup_dir() )
     );
 
-    echo '</tbody></table>';
+    echo '</tbody></table></div>';
 
     printf(
-        '<form method="post" action="%1$s" class="dahu-rb-form">%2$s<input type="hidden" name="action" value="dahu_role_backup_snapshot"><button type="submit" class="button button-primary">%3$s</button></form>',
+        '<div class="dahu-ui-card"><form method="post" action="%1$s" class="dahu-rb-form">%2$s<input type="hidden" name="action" value="dahu_role_backup_snapshot"><button type="submit" class="dahu-ui-btn dahu-ui-btn--go">%3$s</button></form></div>',
         esc_url( admin_url( 'admin-post.php' ) ),
         wp_nonce_field( 'dahu_role_backup_snapshot', '_wpnonce', true, false ),
         esc_html__( 'Take a snapshot now', 'dahu-role-backup' )
     );
 
-    echo '<h2>' . esc_html__( 'Snapshots', 'dahu-role-backup' ) . '</h2>';
+    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Snapshots', 'dahu-role-backup' ) . '</h2></div>';
 
     if ( empty( $all ) ) {
-        echo '<p>' . esc_html__( 'No snapshot yet.', 'dahu-role-backup' ) . '</p>';
+        echo '<p>' . esc_html__( 'No snapshot yet.', 'dahu-role-backup' ) . '</p></div>';
         return;
     }
 
@@ -417,6 +443,8 @@ function dahu_role_backup_render_overview() {
             esc_html__( 'Show every snapshot', 'dahu-role-backup' )
         );
     }
+
+    echo '</div>';
 }
 
 /**
@@ -453,7 +481,7 @@ function dahu_role_backup_render_preview( $filename ) {
         esc_html__( 'Back to the list', 'dahu-role-backup' )
     );
     printf(
-        '<h2>%1$s <code>%2$s</code></h2>',
+        '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">%1$s <code>%2$s</code></h2></div>',
         esc_html__( 'Snapshot', 'dahu-role-backup' ),
         esc_html( $snapshot['file'] )
     );
@@ -478,6 +506,8 @@ function dahu_role_backup_render_preview( $filename ) {
         esc_html( isset( $snapshot['table_prefix'] ) ? $snapshot['table_prefix'] : '?' )
     );
 
+    echo '</div>';
+
     if ( ! empty( $snapshot['roles_perdus'] ) ) {
         printf(
             '<div class="notice notice-warning inline"><p>%1$s <strong>%2$s</strong></p></div>',
@@ -491,7 +521,7 @@ function dahu_role_backup_render_preview( $filename ) {
         return;
     }
 
-    echo '<h3>' . esc_html__( 'What the restore would change', 'dahu-role-backup' ) . '</h3>';
+    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'What the restore would change', 'dahu-role-backup' ) . '</h2></div>';
     echo '<table class="widefat dahu-rb-table"><tbody>';
 
     printf(
@@ -516,7 +546,7 @@ function dahu_role_backup_render_preview( $filename ) {
         esc_html( implode( ', ', $diff['communs'] ) )
     );
 
-    echo '</tbody></table>';
+    echo '</tbody></table></div>';
 
     $nonce  = wp_nonce_field( 'dahu_role_backup_restore_' . $snapshot['file'], '_wpnonce', true, false );
     $action = esc_url( admin_url( 'admin-post.php' ) );
@@ -527,11 +557,11 @@ function dahu_role_backup_render_preview( $filename ) {
     // button would still send full=1. The most destructive mode must never be
     // reachable through the most innocuous button.
     printf(
-        '<form method="post" action="%1$s" class="dahu-rb-form--spaced">%2$s
+        '<div class="dahu-ui-card"><form method="post" action="%1$s" class="dahu-rb-form--spaced">%2$s
         <input type="hidden" name="action" value="dahu_role_backup_restore">
         <input type="hidden" name="fichier" value="%3$s">
-        <p><button type="submit" class="button button-primary"%4$s>%5$s</button></p>
-        </form>',
+        <p><button type="submit" class="dahu-ui-btn dahu-ui-btn--go"%4$s>%5$s</button></p>
+        </form></div>',
         $action,
         $nonce,
         $file,
@@ -548,15 +578,14 @@ function dahu_role_backup_render_preview( $filename ) {
     $confirm = esc_js( __( 'Full replacement of the roles. This action cannot be undone without a restore. Confirm?', 'dahu-role-backup' ) );
 
     printf(
-        '<form method="post" action="%1$s" class="dahu-rb-form--danger">%2$s
+        '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">%4$s</h2></div><form method="post" action="%1$s" class="dahu-rb-form--danger">%2$s
         <input type="hidden" name="action" value="dahu_role_backup_restore">
         <input type="hidden" name="fichier" value="%3$s">
         <input type="hidden" name="full" value="1">
-        <h3 class="dahu-rb-heading-flush">%4$s</h3>
         <p>%5$s <strong class="dahu-rb-warning">%6$s</strong></p>
         <p><label><input type="checkbox" onclick="document.getElementById(\'dahu-full\').disabled = !this.checked;"> %7$s</label></p>
-        <p><button type="submit" id="dahu-full" class="button" disabled onclick="return confirm(\'%8$s\');">%9$s</button></p>
-        </form>',
+        <p><button type="submit" id="dahu-full" class="dahu-ui-btn" disabled onclick="return confirm(\'%8$s\');">%9$s</button></p>
+        </form></div>',
         $action,
         $nonce,
         $file,

@@ -3,7 +3,7 @@
  * Plugin Name:       Dahu Role Backup
  * Plugin URI:        https://dahu-concept.fr
  * Description:       A safety net for WordPress roles and capabilities: timestamped snapshots taken daily and whenever they change, a readable diff, and an additive restore from the admin screen or WP-CLI.
- * Version:           2.0.0
+ * Version:           2.1.0
  * Author:            Hugo Vial-Jaime
  * Author URI:        mailto:contact@dahu-concept.fr
  * License:           MIT
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DAHU_ROLE_BACKUP_VERSION', '2.0.0' );
+define( 'DAHU_ROLE_BACKUP_VERSION', '2.1.0' );
 define( 'DAHU_ROLE_BACKUP_FILE', __FILE__ );
 define( 'DAHU_ROLE_BACKUP_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DAHU_ROLE_BACKUP_URL', plugin_dir_url( __FILE__ ) );
@@ -153,4 +153,91 @@ add_filter(
 	},
 	10,
 	2
+);
+
+/*
+ * The welcome screen, shown once just after activation.
+ *
+ * Registered here rather than inside the admin include, because the
+ * activation flag has to be set whatever else is loaded.
+ */
+require_once DAHU_ROLE_BACKUP_PATH . 'includes/dahu-welcome.php';
+
+/*
+ * The flag, not a redirect: an activation hook that redirects breaks bulk
+ * activation and WP-CLI, which activate several plugins in one request. The
+ * welcome screen reads the flag on the next page load, where a redirect is
+ * safe, and clears it when several plugins were activated together.
+ */
+register_activation_hook(
+	__FILE__,
+	static function () {
+		Dahu_Welcome::mark_activated( 'dahu-role-backup' );
+	}
+);
+
+add_action(
+	'init',
+	static function () {
+		Dahu_Welcome::register(
+			array(
+				'slug'       => 'dahu-role-backup',
+				'name'       => __( 'Role snapshots', 'dahu-role-backup' ),
+				'tagline'    => __( 'A copy of every role, taken before anything can lose one.', 'dahu-role-backup' ),
+				'file'       => DAHU_ROLE_BACKUP_FILE,
+				'version'    => DAHU_ROLE_BACKUP_VERSION,
+				'textdomain' => 'dahu-role-backup',
+				/*
+				 * The tour, on the plugin's own screen. Three stops: what it
+				 * already did on its own, the button somebody might need in a
+				 * hurry, and the status table that shows it is running. A fourth stop would be a
+				 * manual.
+				 */
+				'tour_screen' => 'tools_page_dahu-role-backup',
+				'tour'        => array(
+					array(
+						'selector' => '.dahu-ui-head__title',
+						'title'    => __( 'It is already running', 'dahu-role-backup' ),
+						'text'     => __( 'A first snapshot was taken when you activated the plugin. Nothing here needs setting up.', 'dahu-role-backup' ),
+					),
+					array(
+						'selector' => '.dahu-rb-form button',
+						'title'    => __( 'Take one now', 'dahu-role-backup' ),
+						'text'     => __( 'Before you change roles by hand, or install something that might.', 'dahu-role-backup' ),
+					),
+					array(
+						'selector' => '.dahu-rb-table',
+						'title'    => __( 'Check it is running', 'dahu-role-backup' ),
+						'text'     => __( 'The last snapshot, the next daily run and the roles stored today, at a glance.', 'dahu-role-backup' ),
+					),
+				),
+				/*
+				 * Les mots de l'accueil viennent d'ici : le fichier partagé est
+				 * recopié dans toute la famille et ne peut donc porter aucun
+				 * domaine de traduction.
+				 */
+				'strings'    => array(
+					'next'   => __( 'Next', 'dahu-role-backup' ),
+					'done'   => __( 'Done', 'dahu-role-backup' ),
+					'skip'   => __( 'Skip', 'dahu-role-backup' ),
+					'of'     => __( 'of', 'dahu-role-backup' ),
+					'denied' => __( 'You are not allowed to view this page.', 'dahu-role-backup' ),
+				),
+				'points'     => array(
+				array(
+					'title' => __( 'It watches', 'dahu-role-backup' ),
+					'text'  => __( 'Every write to the roles option is read against the database before it lands.', 'dahu-role-backup' ),
+				),
+				array(
+					'title' => __( 'It copies', 'dahu-role-backup' ),
+					'text'  => __( 'A snapshot is kept daily, and again whenever the roles change.', 'dahu-role-backup' ),
+				),
+				array(
+					'title' => __( 'It restores', 'dahu-role-backup' ),
+					'text'  => __( 'Put back only what went missing, or everything, from the screen.', 'dahu-role-backup' ),
+				),
+				),
+			)
+		);
+	}
 );

@@ -7,364 +7,445 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2026-10-08 09:36+0000\n"
+"PO-Revision-Date: 2026-10-21 10:16+0000\n"
 "X-Domain: dahu-role-backup\n"
 
 #. translators: 1: number of snapshots on disk; 2: daily retention limit; 3: on-change retention limit. */
-#: includes/admin.php:279
+#: \includes\admin.php:292
 msgid "%1$d (limit: %2$d daily + %3$d on change)"
 msgstr ""
 
 #. translators: 1: snapshot file name; 2: number of roles it holds. */
-#: includes/admin.php:294
+#: \includes\admin.php:307
 msgid "%1$s (%2$d role)"
 msgid_plural "%1$s (%2$d roles)"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: human-readable age, for example "3 days"; 2: snapshot file name. */
-#: includes/admin.php:258
+#: \includes\admin.php:271
 msgid "%1$s ago (%2$s)"
 msgstr ""
 
 #. translators: %s: how many older snapshots are not shown. */
-#: includes/admin.php:410
+#: \includes\admin.php:438
 msgid "%s older snapshot is not shown."
 msgid_plural "%s older snapshots are not shown."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: link to the snapshots page, already marked up as an <a> element. */
-#: includes/schedule.php:243
+#: \includes\schedule.php:373
 msgid "%s to take one now."
 msgstr ""
 
-#: includes/admin.php:508
+#: \includes\admin.php:540
 msgid "(kept in additive mode, DELETED in full mode)"
 msgstr ""
 
-#: includes/admin.php:115
+#: \includes\admin.php:128
 msgid "(no role to restore)"
 msgstr ""
 
-#: includes/cli.php:120 includes/cli.php:184
+#: \includes\cli.php:120 \includes\cli.php:184
 msgid "(none)"
 msgstr ""
 
+#: \dahu-role-backup.php:186 \includes\admin.php:223
+msgid "A copy of every role, taken before anything can lose one."
+msgstr ""
+
+#: \dahu-role-backup.php:201
+msgid "A first snapshot was taken when you activated the plugin. Nothing here needs setting up."
+msgstr ""
+
+#: \dahu-role-backup.php:233
+msgid "A snapshot is kept daily, and again whenever the roles change."
+msgstr ""
+
 #. translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-#: includes/cli.php:196
+#: \includes\cli.php:196
 msgid "Additive mode. Roles to recreate: %s"
 msgstr ""
 
-#: includes/admin.php:181
+#: \includes\admin.php:194
 msgid "Additive restore done. Roles restored:"
 msgstr ""
 
-#: includes/admin.php:440
+#: \includes\admin.php:470
 msgid "Back"
 msgstr ""
 
-#: includes/admin.php:451
+#: \includes\admin.php:481
 msgid "Back to the list"
 msgstr ""
 
-#: dahu-role-backup.php:145
+#: \dahu-role-backup.php:206
+msgid "Before you change roles by hand, or install something that might."
+msgstr ""
+
+#: \dahu-role-backup.php:145
 msgid "By Hugo Vial-Jaime — Dahu-Concept"
 msgstr ""
 
-#: includes/admin.php:347
+#: \includes\admin.php:375
 msgid "Change"
 msgstr ""
 
-#: includes/admin.php:388
+#: \dahu-role-backup.php:210
+msgid "Check it is running"
+msgstr ""
+
+#: \includes\admin.php:416
 msgid "Compare / restore"
 msgstr ""
 
-#: includes/snapshot.php:205
+#: \includes\snapshot.php:205
 msgid "Could not write "
 msgstr ""
 
 #. translators: 1: date the snapshot was created; 2: number of roles held by the snapshot. */
-#: includes/admin.php:470
+#: \includes\admin.php:500
 msgid "Created on %1$s — %2$d role"
 msgid_plural "Created on %1$s — %2$d roles"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin.php:212
-msgid "Dahu Role Backup keeps a copy of every WordPress role, taken daily and on every change, so a capability lost by mistake can be compared and put back."
-msgstr ""
-
-#: includes/admin.php:346
+#: \includes\admin.php:374
 msgid "Daily"
 msgstr ""
 
-#: includes/admin.php:338
+#: \includes\admin.php:366
 msgid "Date"
 msgstr ""
 
-#: includes/admin.php:304
+#: \includes\admin.php:332
 msgid "Directory"
 msgstr ""
 
+#: \dahu-role-backup.php:221
+msgid "Done"
+msgstr ""
+
 #. translators: %s: empty, or a colon followed by the comma-separated roles that would be deleted. */
-#: includes/admin.php:566
+#: \includes\admin.php:597
 msgid "Every role created since will be permanently deleted%s."
 msgstr ""
 
+#: \dahu-role-backup.php:229
+msgid "Every write to the roles option is read against the database before it lands."
+msgstr ""
+
 #. translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-#: includes/cli.php:189
+#: \includes\cli.php:189
 msgid "FULL mode. Roles that will be DELETED: %s"
 msgstr ""
 
-#: includes/admin.php:189
+#: \includes\admin.php:202
 msgid "Failure:"
 msgstr ""
 
 #. translators: %s: comma-separated slugs of the roles that could not be recreated. */
-#: includes/cli.php:215
+#: \includes\cli.php:215
 msgid "Failures: %s"
 msgstr ""
 
-#: includes/admin.php:341
+#: \includes\admin.php:369
 msgid "File"
 msgstr ""
 
-#: includes/admin.php:561
+#: \includes\admin.php:592
 msgid "Full replacement"
 msgstr ""
 
-#: includes/admin.php:546
+#: \includes\admin.php:578
 msgid "Full replacement of the roles. This action cannot be undone without a restore. Confirm?"
 msgstr ""
 
-#: includes/admin.php:180
+#: \includes\admin.php:193
 msgid "Full restore done. Roles restored:"
 msgstr ""
 
-#: includes/admin.php:570
+#: \includes\admin.php:601
 msgid "I understand and I confirm."
 msgstr ""
 
-#: includes/snapshot.php:267
+#: \includes\snapshot.php:267
 msgid "Invalid snapshot name."
 msgstr ""
 
-#: includes/admin.php:400
+#: \dahu-role-backup.php:232
+msgid "It copies"
+msgstr ""
+
+#: \dahu-role-backup.php:200
+msgid "It is already running"
+msgstr ""
+
+#: \dahu-role-backup.php:236
+msgid "It restores"
+msgstr ""
+
+#: \dahu-role-backup.php:228
+msgid "It watches"
+msgstr ""
+
+#: \includes\admin.php:428
 msgid "Kept whatever the retention limit says: it is the most complete snapshot, and the one a restore should usually start from."
 msgstr ""
 
-#: includes/admin.php:339
+#: \includes\admin.php:367
 msgid "Kind"
 msgstr ""
 
-#: includes/admin.php:252
+#: \includes\admin.php:265
 msgid "Last snapshot"
 msgstr ""
 
-#: includes/admin.php:348
+#: \includes\admin.php:376
 msgid "Manual"
 msgstr ""
 
-#: includes/admin.php:267
+#: \dahu-role-backup.php:220
+msgid "Next"
+msgstr ""
+
+#: \includes\admin.php:280
 msgid "Next daily snapshot"
 msgstr ""
 
 #. translators: %s: file name of the identical snapshot already on disk. */
-#: includes/cli.php:82
+#: \includes\cli.php:82
 msgid "No change since %s: nothing to write."
 msgstr ""
 
-#: includes/restore.php:81
+#: \includes\restore.php:81
 msgid "No role missing: nothing to restore."
 msgstr ""
 
-#: includes/admin.php:169
+#: \includes\admin.php:182
 msgid "No snapshot created: the roles are identical to the last one recorded."
 msgstr ""
 
-#: includes/admin.php:320
+#: \includes\admin.php:348
 msgid "No snapshot yet."
 msgstr ""
 
-#: includes/cli.php:41
+#: \includes\cli.php:41
 msgid "No snapshot."
 msgstr ""
 
-#: includes/cli.php:208
+#: \includes\cli.php:208
 msgid "Nothing to restore."
 msgstr ""
 
-#: includes/schedule.php:235
+#: \includes\schedule.php:365
 msgid "Open the snapshots page"
 msgstr ""
 
-#: includes/admin.php:562
+#: \includes\admin.php:593
 msgid "Overwrites the whole set of roles with this snapshot."
 msgstr ""
 
-#: dahu-role-backup.php:150
+#: \dahu-role-backup.php:150
 msgid "Plugin website"
 msgstr ""
 
-#: includes/snapshot.php:157
+#: \dahu-role-backup.php:237
+msgid "Put back only what went missing, or everything, from the screen."
+msgstr ""
+
+#: \includes\snapshot.php:157
 msgid "Refusing to write an empty or invalid snapshot."
 msgstr ""
 
-#: includes/cli.php:192
+#: \includes\cli.php:192
 msgid "Replace every role with the snapshot?"
 msgstr ""
 
-#: includes/admin.php:572
+#: \includes\admin.php:603
 msgid "Replace in full"
 msgstr ""
 
-#: includes/admin.php:537
+#: \includes\admin.php:569
 msgid "Restore the missing roles (additive)"
 msgstr ""
 
-#: includes/admin.php:25 includes/admin.php:26 includes/admin.php:208
+#: \dahu-role-backup.php:185 \includes\admin.php:25 \includes\admin.php:26 \includes\admin.php:222
 msgid "Role snapshots"
 msgstr ""
 
-#: includes/admin.php:340
+#: \includes\admin.php:368
 msgid "Roles"
 msgstr ""
 
-#: includes/admin.php:513
+#: \includes\admin.php:545
 msgid "Roles already present"
 msgstr ""
 
 #. translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-#: includes/cli.php:134
+#: \includes\cli.php:134
 msgid "Roles common to both: %s"
 msgstr ""
 
-#: includes/admin.php:245
+#: \includes\admin.php:258
 msgid "Roles currently in the database"
 msgstr ""
 
 #. translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-#: includes/cli.php:124
+#: \includes\cli.php:124
 msgid "Roles missing (would be recreated): %s"
 msgstr ""
 
 #. translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-#: includes/cli.php:129
+#: \includes\cli.php:129
 msgid "Roles missing from the snapshot: %s"
 msgstr ""
 
-#: includes/admin.php:505
+#: \includes\admin.php:537
 msgid "Roles missing from this snapshot"
 msgstr ""
 
 #. translators: %s: comma-separated slugs of the roles that were recreated. */
-#: includes/cli.php:222
+#: \includes\cli.php:222
 msgid "Roles restored: %s"
 msgstr ""
 
-#: includes/admin.php:497
+#: \includes\admin.php:529
 msgid "Roles to recreate (additive mode)"
 msgstr ""
 
-#: includes/admin.php:415
+#: \includes\admin.php:443
 msgid "Show every snapshot"
 msgstr ""
 
-#: includes/admin.php:455
+#: \dahu-role-backup.php:222
+msgid "Skip"
+msgstr ""
+
+#: \includes\admin.php:485
 msgid "Snapshot"
 msgstr ""
 
-#: includes/admin.php:161
+#: \includes\admin.php:174
 msgid "Snapshot created:"
 msgstr ""
 
 #. translators: 1: snapshot file name, 2: number of roles it holds. */
-#: includes/cli.php:90
+#: \includes\cli.php:90
 msgid "Snapshot created: %1$s (%2$d role)."
 msgid_plural "Snapshot created: %1$s (%2$d roles)."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/snapshot.php:161
+#: \includes\snapshot.php:161
 msgid "Snapshot directory missing or not writable: "
 msgstr ""
 
-#: includes/snapshot.php:273
+#: \includes\snapshot.php:273
 msgid "Snapshot not found: "
 msgstr ""
 
-#: includes/admin.php:289
+#: \includes\admin.php:302
 msgid "Snapshot protected from pruning"
 msgstr ""
 
-#: includes/snapshot.php:279
+#: \includes\snapshot.php:279
 msgid "Snapshot unreadable or corrupted: "
 msgstr ""
 
-#: dahu-role-backup.php:119 includes/admin.php:317
+#: \dahu-role-backup.php:119 \includes\admin.php:345
 msgid "Snapshots"
 msgstr ""
 
-#: includes/admin.php:275
+#: \includes\admin.php:288
 msgid "Snapshots kept"
 msgstr ""
 
-#: includes/admin.php:240
+#: \includes\admin.php:253
 msgid "Status"
 msgstr ""
 
-#: includes/admin.php:314
+#: \includes\admin.php:342
 msgid "Take a snapshot now"
 msgstr ""
 
-#: includes/snapshot.php:313
+#: \dahu-role-backup.php:205
+msgid "Take one now"
+msgstr ""
+
+#: \includes\snapshot.php:375
+msgid "Taken because a write was about to erase roles that were still stored."
+msgstr ""
+
+#. translators: %s: comma-separated list of role slugs. */
+#: \includes\snapshot.php:380
+msgid "Taken because a write was about to erase roles that were still stored: %s."
+msgstr ""
+
+#: \dahu-role-backup.php:211
+msgid "The last snapshot, the next daily run and the roles stored today, at a glance."
+msgstr ""
+
+#: \includes\snapshot.php:313
 msgid "This snapshot comes from ANOTHER installation and cannot be restored here. Snapshot: prefix \"%s\", option \"%s\". This installation: prefix \"%s\", option \"%s\"."
 msgstr ""
 
-#: includes/admin.php:482
+#: \includes\admin.php:514
 msgid "This snapshot was triggered by the disappearance of:"
 msgstr ""
 
 #. translators: %s: plugin version number. */
-#: dahu-role-backup.php:139
+#: \dahu-role-backup.php:139
 msgid "Version %s"
 msgstr ""
 
-#: includes/admin.php:492
+#: \includes\admin.php:524
 msgid "What the restore would change"
 msgstr ""
 
-#: includes/admin.php:72 includes/admin.php:100 includes/admin.php:204
+#: \includes\admin.php:325
+msgid "Why it was taken"
+msgstr ""
+
+#: \includes\admin.php:85 \includes\admin.php:113 \includes\admin.php:217
 msgid "You are not allowed to access this page."
 msgstr ""
 
-#: includes/snapshot.php:175
+#: \dahu-role-backup.php:224
+msgid "You are not allowed to view this page."
+msgstr ""
+
+#: \includes\snapshot.php:175
 msgid "identical to the last snapshot"
 msgstr ""
 
-#: includes/schedule.php:221
+#: \includes\schedule.php:351
 msgid "no role snapshot has been recorded yet."
 msgstr ""
 
-#: includes/admin.php:254 includes/admin.php:507
+#: \includes\admin.php:267 \includes\admin.php:539
 msgid "none"
 msgstr ""
 
-#: includes/admin.php:499
+#: \includes\admin.php:531
 msgid "none — nothing to restore"
 msgstr ""
 
-#: includes/admin.php:270
+#: \includes\admin.php:283
 msgid "not scheduled"
 msgstr ""
 
-#: includes/admin.php:475
+#: \dahu-role-backup.php:223
+msgid "of"
+msgstr ""
+
+#: \includes\admin.php:505
 msgid "origin:"
 msgstr ""
 
 #. translators: %s: human-readable age of the last snapshot, for example "3 days". */
-#: includes/schedule.php:226
+#: \includes\schedule.php:356
 msgid "the last role snapshot is %s old. Roles are therefore no longer protected."
 msgstr ""
 

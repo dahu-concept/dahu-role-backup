@@ -188,6 +188,90 @@ Le répertoire est laissé en place, à supprimer sciemment. Seuls l'option
 
 ---
 
+## 2.1.0 — La copie périmée
+
+La promesse de l'extension est qu'il existe une sauvegarde des rôles d'**avant**
+leur disparition. Jusqu'ici elle tenait pour tous les cas visibles : une
+suppression explicite, une écriture qui retire des rôles, le cron quotidien.
+
+Elle ne tenait pas pour le seul cas qui fait vraiment disparaître des rôles sur
+un site vivant, et c'est le cas qu'aucun garde-fou ordinaire ne voit.
+
+### Le mécanisme
+
+`WP_Role::add_cap()` n'ajoute pas une capacité. Il réécrit **tout** le tableau
+des rôles, à partir de la copie que la requête en cours a chargée à son
+démarrage. Donc :
+
+1. La requête A charge l'option. Elle contient 12 rôles.
+2. La requête B, en parallèle, crée un 13e rôle. En base il y en a 13.
+3. La requête A ajoute une capacité et réécrit **sa** copie à 12 rôles.
+4. Le 13e rôle n'existe plus. Rien n'a échoué, rien n'est journalisé.
+
+Et le piège qui rend la chose silencieuse pour nous : dans
+`update_option_{option}`, `$old_value` **vient de cette même copie périmée**.
+Un garde-fou qui compare l'écriture à `$old_value` ne voit donc rien manquer et
+se tait. Seule une lecture directe de la ligne, derrière le cache d'objets, voit
+les 13 rôles.
+
+### Ce qui a été ajouté
+
+`dahu_role_backup_before_option_write()`, branché sur
+`pre_update_option_{option}` à `PHP_INT_MAX`. Dans cet ordre, et chaque étape
+pour une raison :
+
+1. **Sortie immédiate si la valeur est identique** (`maybe_serialize` des deux
+   côtés). C'est le cas fréquent — une extension qui appelle `add_cap()` alors
+   que la capacité est déjà là — et il y en a des milliers. Sans cette sortie,
+   chaque écriture à vide paierait une lecture directe en base, et un garde-fou
+   qui coûte cher est un garde-fou qu'on désactive. Mesuré au banc : écriture à
+   vide, zéro requête de surveillance.
+2. **Lecture directe de la ligne**, `SELECT option_value ... LIMIT 1`, sans
+   passer par `get_option()`. C'est tout l'intérêt : le cache d'objets et
+   `$old_value` portent la même copie périmée.
+3. **Différence des slugs** entre la base et la valeur écrite. Rien ne manque →
+   rien à faire.
+4. **Test de péremption** : `maybe_serialize( $old_value ) !== $raw`. Sans lui,
+   une suppression légitime de rôle serait classée comme une copie périmée, et
+   l'étiquette ne voudrait plus rien dire.
+5. Journal explicite (`!!! ROLES ABOUT TO BE LOST BY A STALE COPY !!!`) avec les
+   rôles perdus, les deux décomptes et le contexte, puis
+   `dahu_role_backup_write( 'change', $database, ... )` — **l'instantané est
+   pris depuis la base**, pas depuis la valeur écrite, sans quoi on
+   sauvegarderait précisément la perte.
+6. L'instantané porte `evenement => copie_perimee` et `roles_perdus`, ce qui
+   distingue une sauvegarde de sauvetage d'une sauvegarde quotidienne.
+
+Le corps entier est dans un `try/catch ( Throwable )` et rend toujours `$value` :
+un filtre sur `pre_update_option` qui lèverait une exception empêcherait
+l'écriture des rôles, c'est-à-dire casserait le site pour le protéger.
+
+### Suite de tests
+
+`_bench/t-role-backup.php` — 24 assertions. La mesure centrale fabrique
+vraiment la course : une écriture en base derrière le cache (`$wpdb->update()`
+puis purge du cache), de sorte que la copie de la requête reste périmée, puis un
+`update_option()` depuis cette copie. Deux assertions établissent la situation
+avant de juger quoi que ce soit — « LA BASE CONNAÎT LE RÔLE » et « MAIS PAS LA
+COPIE DE CETTE REQUÊTE » — parce qu'une mesure qui ne prouve pas d'abord qu'elle
+a reproduit la course ne mesure rien.
+
+`_bench/prove-role-backup.py` — 9 violations délibérées, **9 attrapées, 0
+manquée** (mesuré le 2026-10-20). Chacune doit faire
+tomber l'assertion **nommée** : le branchement retiré, la comparaison faite sur
+`$old_value` au lieu de la base, le test de péremption supprimé, l'instantané
+pris depuis l'écriture, la classification retirée, le nom du rôle perdu retiré,
+la sortie à vide supprimée (celle-là tombe sur le coût, pas sur la
+sauvegarde), la raison du sauvetage rendue illisible, et une sauvegarde
+ordinaire présentée comme un sauvetage.
+
+Une mesure de cette section s'est trompée de cible avant d'être corrigée : les
+assertions sur la raison affichée avaient été posées en section 3, or la
+section 2 **supprime tous les fichiers d'instantané** pour isoler sa propre
+mesure. Elles lisaient donc un fichier qui n'existait plus. Le défaut était dans
+le banc, pas dans l'extension — vérifié en sondant le disque avant de toucher au
+code.
+
 ## Reste à faire avant soumission
 
 - [ ] **Vérification fonctionnelle sur un site réel** : rien n'a été exécuté.

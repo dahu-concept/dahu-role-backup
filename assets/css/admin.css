@@ -102,10 +102,6 @@
 	border-top: 1px solid var( --dahu-admin-border );
 }
 
-.dahu-rb-heading-flush {
-	margin-top: 0;
-}
-
 /*
  * Something missing, or about to be lost: no snapshot at all, no scheduled
  * run, a role the full restore would delete.
@@ -125,20 +121,6 @@
  */
 .dahu-rb-protected {
 	color: var( --dahu-admin-caution );
-}
-
-/* --- The one-line introduction under the page title ------------------- */
-
-/*
- * Every Dahu screen carries one, and it is the same rule everywhere. A lede
- * that runs the full width of a 1920px screen is not read; the reading measure
- * is what makes it a sentence rather than a banner.
- */
-.dahu-role-backup__intro {
-	max-width: var( --dahu-admin-measure );
-	margin: 0 0 var( --dahu-admin-gap-lg );
-	color: var( --dahu-admin-text-muted );
-	font-size: 14px;
 }
 
 /* --- The snapshot list ------------------------------------------------- */
