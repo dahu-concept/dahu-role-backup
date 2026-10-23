@@ -4,7 +4,7 @@ Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.3.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -101,6 +101,24 @@ roles option is actually written, which on a normal site is rare.
 2. Comparing a snapshot with the current roles.
 
 == Changelog ==
+
+= 2.3.1 =
+* The snapshot list now says what will appear there once a snapshot is taken.
+* The status line no longer ends on a dash when the roles option cannot be read; it says that it could not be read.
+
+= 2.3.0 =
+* The activation screen now opens on the plugin's own mark rather than its initials, and the banner carries the same drawing as a watermark.
+
+= 2.2.0 =
+* A restore now refills WordPress's in-memory copy of the roles from the
+  database before it writes, and again after a full restore. Every write of
+  the roles option rewrites the whole option from that copy, so a copy that
+  was out of date did not merely fail to see a role: it erased it — while
+  restoring.
+* The current roles are read straight from the table rather than through
+  get_option(), which on a site with a persistent object cache could answer
+  with the stale copy this plugin exists to see past, and freeze a snapshot
+  that was already missing a role.
 
 = 2.1.0 =
 * Watches for the one way roles disappear without anything failing: a request

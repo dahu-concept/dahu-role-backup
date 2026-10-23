@@ -41,6 +41,15 @@ function dahu_role_backup_restore( $filename, $full = false ) {
         return $origin;
     }
 
+    // THE IN-MEMORY ROLES ARE REFILLED FROM THE TABLE BEFORE ANYTHING IS
+    // WRITTEN. WordPress keeps every role in one option and rewrites the
+    // WHOLE option from its in-memory copy, so a stale copy does not merely
+    // fail to see a role: it erases it. Both branches below write that
+    // option — add_role() through the core API, update_option() directly —
+    // so both would restore from, and write back, whatever the copy had not
+    // heard about. See dahu_role_backup_reload_roles().
+    dahu_role_backup_reload_roles();
+
     // A safety net for the safety net: the current state is frozen before any
     // change is made, so a restore that goes wrong stays reversible.
     $current = dahu_role_backup_read_current();
@@ -56,6 +65,12 @@ function dahu_role_backup_restore( $filename, $full = false ) {
 
     if ( $full ) {
         $ok = update_option( dahu_role_backup_option_name(), $snapshot['roles'] );
+
+        // Writing the option directly leaves WP_Roles holding the state from
+        // before the restore. The next write of that option in this request —
+        // one add_cap() is enough — would rewrite the table from that copy and
+        // undo everything just restored.
+        dahu_role_backup_reload_roles();
 
         dahu_role_backup_log( sprintf(
             'FULL RESTORE from %1$s | roles restored: %2$s | roles overwritten: %3$s | %4$s',

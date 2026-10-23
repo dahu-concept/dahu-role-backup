@@ -23,6 +23,18 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
  */
 function dahu_role_backup_uninstall_site() {
 
+	// The welcome screen's own three flags.
+	//
+	// They are interface state, not the shop's data, which is why they sit
+	// BEFORE any “remove data on uninstall” guard: whatever a shop chose to
+	// keep, a reinstall has to greet it again. `includes/dahu-welcome.php`
+	// writes them with update_option(), so they outlive the plugin unless
+	// they are deleted here — and the welcome screen and the guided tour
+	// would then stay silent for good, with nothing on screen to explain why.
+	delete_option( 'dahu_welcome_seen_dahu-role-backup' );
+	delete_option( 'dahu_welcome_pending_dahu-role-backup' );
+	delete_option( 'dahu_welcome_tour_dahu-role-backup' );
+
 	$timestamp = wp_next_scheduled( 'dahu_role_backup_daily' );
 
 	if ( $timestamp ) {

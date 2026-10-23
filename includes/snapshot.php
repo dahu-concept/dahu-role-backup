@@ -238,11 +238,16 @@ function dahu_role_backup_write( $type, $roles, $extra = array() ) {
  * request and held in memory, so after another plugin has written the option it
  * can be stale. The database is the authority.
  *
+ * And not get_option() either, which was the earlier reading and did not keep
+ * that promise: get_option() is served from the object cache, so on a site
+ * with Redis or Memcached this function could answer with the same stale copy
+ * it exists to see past — freezing a snapshot that was already missing a role,
+ * which is the one failure this plugin must not have.
+ *
  * @return array Roles currently stored, or an empty array.
  */
 function dahu_role_backup_read_current() {
-    $value = get_option( dahu_role_backup_option_name() );
-    return is_array( $value ) ? $value : array();
+    return dahu_role_backup_read_db_roles();
 }
 
 

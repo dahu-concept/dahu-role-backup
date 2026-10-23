@@ -3,7 +3,7 @@
  * Plugin Name:       Dahu Role Backup
  * Plugin URI:        https://dahu-concept.fr
  * Description:       A safety net for WordPress roles and capabilities: timestamped snapshots taken daily and whenever they change, a readable diff, and an additive restore from the admin screen or WP-CLI.
- * Version:           2.1.0
+ * Version:           2.3.1
  * Author:            Hugo Vial-Jaime
  * Author URI:        mailto:contact@dahu-concept.fr
  * License:           MIT
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DAHU_ROLE_BACKUP_VERSION', '2.1.0' );
+define( 'DAHU_ROLE_BACKUP_VERSION', '2.3.1' );
 define( 'DAHU_ROLE_BACKUP_FILE', __FILE__ );
 define( 'DAHU_ROLE_BACKUP_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DAHU_ROLE_BACKUP_URL', plugin_dir_url( __FILE__ ) );
@@ -187,6 +187,14 @@ add_action(
 				'file'       => DAHU_ROLE_BACKUP_FILE,
 				'version'    => DAHU_ROLE_BACKUP_VERSION,
 				'textdomain' => 'dahu-role-backup',
+				'mark'       => array(
+					'view'  => '0 0 112 112',
+					'paths' => array(
+						'M56 6 L102 22 L102 60 Q102 92 56 108 Q10 92 10 60 L10 22 Z',
+						'M74 64 A18 18 0 1 1 56 46',
+						'M47 37 L56 46 L47 55',
+					),
+				),
 				/*
 				 * The tour, on the plugin's own screen. Three stops: what it
 				 * already did on its own, the button somebody might need in a
@@ -212,9 +220,9 @@ add_action(
 					),
 				),
 				/*
-				 * Les mots de l'accueil viennent d'ici : le fichier partagé est
-				 * recopié dans toute la famille et ne peut donc porter aucun
-				 * domaine de traduction.
+				 * The welcome screen's words come from here: the shared file is
+				 * copied byte for byte across the whole family, so it can carry
+				 * no text domain of its own.
 				 */
 				'strings'    => array(
 					'next'   => __( 'Next', 'dahu-role-backup' ),

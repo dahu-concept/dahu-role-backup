@@ -104,6 +104,83 @@ function dahu_role_backup_ensure_dir() {
 }
 
 /* -------------------------------------------------------------------------
+ * Reading and reloading the roles past every cache
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Reads the roles option straight from the options table.
+ *
+ * get_option() is served from the object cache, so on a site with Redis or
+ * Memcached it can answer with a copy minutes old. Everything this plugin
+ * does — freezing a state, diffing a snapshot, deciding what to restore —
+ * is worthless if it is reasoning about a copy rather than about the table.
+ *
+ * @return array Roles as stored, or an empty array when the row is missing.
+ */
+function dahu_role_backup_read_db_roles() {
+    global $wpdb;
+
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- reading past the object cache is the entire point.
+    $raw = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+            dahu_role_backup_option_name()
+        )
+    );
+
+    if ( null === $raw ) {
+        return array();
+    }
+
+    $value = maybe_unserialize( $raw );
+
+    return is_array( $value ) ? $value : array();
+}
+
+/**
+ * Refills the in-memory roles object from the table.
+ *
+ * WordPress keeps every role in ONE option, and WP_Roles holds a copy of it
+ * in memory. Every write of that option — add_role(), remove_role(),
+ * WP_Role::add_cap() — rewrites the WHOLE option from that copy. A copy that
+ * is out of date therefore does not merely fail to see a role: it ERASES it,
+ * because the role is absent from the array being written back.
+ *
+ * Which makes this call mandatory on a restore path, in both directions. A
+ * restore that adds a role through add_role() while the in-memory copy is
+ * stale writes the stale array plus one role, deleting whatever the copy had
+ * not heard about. And a restore that writes the option directly leaves that
+ * copy stale behind it, so the next add_cap() of the same request undoes the
+ * restore. A rescue tool that loses roles while restoring them is worse than
+ * no rescue tool.
+ *
+ * The site is named before reading as well as after: for_site() with no
+ * argument recalibrates role_key on the CURRENT site, so a network plugin
+ * that switched blogs without restoring would otherwise have this reading
+ * site A while the write went to site B.
+ *
+ * @return void
+ */
+function dahu_role_backup_reload_roles() {
+    $roles   = function_exists( 'wp_roles' ) ? wp_roles() : null;
+    $site_id = get_current_blog_id();
+
+    if ( is_object( $roles ) && method_exists( $roles, 'for_site' ) ) {
+        $roles->for_site( $site_id );
+    }
+
+    wp_cache_delete( 'alloptions', 'options' );
+    wp_cache_delete( 'notoptions', 'options' );
+    wp_cache_delete( dahu_role_backup_option_name(), 'options' );
+
+    // And again, to load back what the table really holds now that the cache
+    // no longer stands in the way.
+    if ( is_object( $roles ) && method_exists( $roles, 'for_site' ) ) {
+        $roles->for_site( $site_id );
+    }
+}
+
+/* -------------------------------------------------------------------------
  * Logging
  * ---------------------------------------------------------------------- */
 

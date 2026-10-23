@@ -253,11 +253,18 @@ function dahu_role_backup_render_overview() {
     echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Status', 'dahu-role-backup' ) . '</h2></div>';
     echo '<table class="widefat dahu-rb-table"><tbody>';
 
+    /*
+     * A site always has roles, so a count of zero means the option could not
+     * be read rather than that there is nothing to back up. Say that, instead
+     * of printing a dash with nothing after it.
+     */
     printf(
         '<tr><th class="dahu-rb-col-label">%1$s</th><td><strong>%2$d</strong> — %3$s</td></tr>',
         esc_html__( 'Roles currently in the database', 'dahu-role-backup' ),
         count( $current ),
-        esc_html( implode( ', ', dahu_role_backup_slugs( $current ) ) )
+        empty( $current )
+            ? '<span class="dahu-rb-warning">' . esc_html__( 'the roles option could not be read', 'dahu-role-backup' ) . '</span>'
+            : esc_html( implode( ', ', dahu_role_backup_slugs( $current ) ) )
     );
 
     printf(
@@ -345,7 +352,7 @@ function dahu_role_backup_render_overview() {
     echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Snapshots', 'dahu-role-backup' ) . '</h2></div>';
 
     if ( empty( $all ) ) {
-        echo '<p>' . esc_html__( 'No snapshot yet.', 'dahu-role-backup' ) . '</p></div>';
+        echo '<p class="dahu-ui-hint">' . esc_html__( 'No snapshot yet; the first one appears here as soon as you take one.', 'dahu-role-backup' ) . '</p></div>';
         return;
     }
 
