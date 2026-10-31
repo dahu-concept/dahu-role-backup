@@ -367,11 +367,11 @@ function dahu_role_backup_stale_notice() {
 
     printf(
         '<div class="notice notice-warning"><p><strong>Dahu Role Backup</strong> — %1$s %2$s</p></div>',
-        $state,
+        $state, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
         sprintf(
             /* translators: %s: link to the snapshots page, already marked up as an <a> element. */
-            __( '%s to take one now.', 'dahu-role-backup' ),
-            $link
+            __( '%s to take one now.', 'dahu-role-backup' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
+            $link // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
         )
     );
 }

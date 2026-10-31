@@ -5,7 +5,7 @@
  * Description:       A safety net for WordPress roles and capabilities: timestamped snapshots taken daily and whenever they change, a readable diff, and an additive restore from the admin screen or WP-CLI.
  * Version:           2.3.1
  * Author:            Hugo Vial-Jaime
- * Author URI:        mailto:contact@dahu-concept.fr
+ * Author URI:        https://dahu-concept.fr
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       dahu-role-backup

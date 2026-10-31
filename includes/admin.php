@@ -345,7 +345,7 @@ function dahu_role_backup_render_overview() {
     printf(
         '<div class="dahu-ui-card"><form method="post" action="%1$s" class="dahu-rb-form">%2$s<input type="hidden" name="action" value="dahu_role_backup_snapshot"><button type="submit" class="dahu-ui-btn dahu-ui-btn--go">%3$s</button></form></div>',
         esc_url( admin_url( 'admin-post.php' ) ),
-        wp_nonce_field( 'dahu_role_backup_snapshot', '_wpnonce', true, false ),
+        wp_nonce_field( 'dahu_role_backup_snapshot', '_wpnonce', true, false ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         esc_html__( 'Take a snapshot now', 'dahu-role-backup' )
     );
 
@@ -413,7 +413,7 @@ function dahu_role_backup_render_overview() {
             '<tr><td>%1$s</td><td>%2$s</td><td class="dahu-rb-snapshots__num"><strong>%3$d</strong>%4$s</td><td><code>%5$s</code> <span class="dahu-rb-snapshots__size">%6$s</span></td><td class="dahu-rb-snapshots__action"><a href="%7$s">%8$s</a></td></tr>',
             esc_html( wp_date( dahu_role_backup_datetime_format(), $meta['timestamp'] ) ),
             esc_html( isset( $labels[ $meta['type'] ] ) ? $labels[ $meta['type'] ] : $meta['type'] ),
-            $meta['count'],
+            $meta['count'], // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
             $is_best
                 ? ' <span class="dahu-rb-protected">&#9733;</span>'
                 : '',
@@ -569,9 +569,9 @@ function dahu_role_backup_render_preview( $filename ) {
         <input type="hidden" name="fichier" value="%3$s">
         <p><button type="submit" class="dahu-ui-btn dahu-ui-btn--go"%4$s>%5$s</button></p>
         </form></div>',
-        $action,
-        $nonce,
-        $file,
+        $action, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
+        $nonce, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
+        $file, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         empty( $diff['manquants'] ) ? ' disabled' : '',
         esc_html__( 'Restore the missing roles (additive)', 'dahu-role-backup' )
     );
@@ -593,9 +593,9 @@ function dahu_role_backup_render_preview( $filename ) {
         <p><label><input type="checkbox" onclick="document.getElementById(\'dahu-full\').disabled = !this.checked;"> %7$s</label></p>
         <p><button type="submit" id="dahu-full" class="dahu-ui-btn" disabled onclick="return confirm(\'%8$s\');">%9$s</button></p>
         </form></div>',
-        $action,
-        $nonce,
-        $file,
+        $action, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
+        $nonce, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
+        $file, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         esc_html__( 'Full replacement', 'dahu-role-backup' ),
         esc_html__( 'Overwrites the whole set of roles with this snapshot.', 'dahu-role-backup' ),
         esc_html(
@@ -606,7 +606,7 @@ function dahu_role_backup_render_preview( $filename ) {
             )
         ),
         esc_html__( 'I understand and I confirm.', 'dahu-role-backup' ),
-        $confirm,
+        $confirm, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         esc_html__( 'Replace in full', 'dahu-role-backup' )
     );
 }

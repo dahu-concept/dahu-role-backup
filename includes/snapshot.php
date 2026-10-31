@@ -315,7 +315,8 @@ function dahu_role_backup_check_origin( $snapshot ) {
         return new WP_Error(
             'dahu_role_backup_origine',
             sprintf(
-                __( 'This snapshot comes from ANOTHER installation and cannot be restored here. Snapshot: prefix "%s", option "%s". This installation: prefix "%s", option "%s".', 'dahu-role-backup' ),
+                /* translators: 1: table prefix stored in the snapshot, 2: option name stored in the snapshot, 3: table prefix of this installation, 4: option name of this installation. */
+                __( 'This snapshot comes from ANOTHER installation and cannot be restored here. Snapshot: prefix "%1$s", option "%2$s". This installation: prefix "%3$s", option "%4$s".', 'dahu-role-backup' ),
                 $found_prefix,
                 $found_option,
                 $expected_prefix,

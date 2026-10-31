@@ -100,7 +100,7 @@ function dahu_role_backup_ensure_dir() {
         @file_put_contents( $index, "<?php\n// Silence.\n" );
     }
 
-    return is_dir( $dir ) && is_writable( $dir );
+    return is_dir( $dir ) && is_writable( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- checks the plugin's own directory before writing, from cron, where WP_Filesystem is not initialised.
 }
 
 /* -------------------------------------------------------------------------
@@ -206,7 +206,7 @@ function dahu_role_backup_log( $message ) {
     $file = dahu_role_backup_dir() . '/backup.log';
 
     if ( file_exists( $file ) && filesize( $file ) > 2 * 1024 * 1024 ) {
-        @rename( $file, $file . '.1' );
+        @rename( $file, $file . '.1' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- rotates the plugin's own log inside its private directory, from cron, where WP_Filesystem is not initialised.
     }
 
     $line = '[' . gmdate( 'Y-m-d H:i:s' ) . ' UTC] ' . $message . "\n";
@@ -319,7 +319,15 @@ function dahu_role_backup_prune() {
             continue;
         }
 
-        if ( @unlink( $meta['path'] ) ) {
+        /* wp_delete_file() RATHER THAN unlink(), AND THE RESULT IS MEASURED.
+         * It returns NOTHING, so testing its return value would count every
+         * deletion as a failure. The absence of the file is the proof, and
+         * clearstatcache() is what makes file_exists() answer about the disk
+         * rather than about what PHP remembers from a moment ago. */
+        wp_delete_file( $meta['path'] );
+        clearstatcache( true, $meta['path'] );
+
+        if ( ! file_exists( $meta['path'] ) ) {
             $deleted[] = $meta['file'];
         }
     }
