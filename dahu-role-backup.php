@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name:       Dahu Role Backup
- * Plugin URI:        https://dahu-concept.fr
  * Description:       A safety net for WordPress roles and capabilities: timestamped snapshots taken daily and whenever they change, a readable diff, and an additive restore from the admin screen or WP-CLI.
  * Version:           2.3.1
  * Author:            Hugo Vial-Jaime
