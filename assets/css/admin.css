@@ -3,7 +3,7 @@
  * SHARED ADMIN TOKENS
  * ------------------------------------------------------------------------
  *
- * This block is identical in every Dahu plugin, deliberately. The plugins
+ * This block is identical in every Ubac plugin, deliberately. The plugins
  * are independent — each has to work with none of the others installed — so
  * they cannot share a stylesheet, and the only way for their screens to
  * look like one family is for each to declare the same tokens under the
@@ -14,7 +14,7 @@
  * brand: a plugin screen that ignores the admin it lives in reads as a
  * foreign object, however well designed it is on its own.
  *
- * The `--dahu-admin-` prefix is what makes a declaration on :root safe
+ * The `--ubac-admin-` prefix is what makes a declaration on :root safe
  * here. Two plugins declaring it write the same values, so neither can
  * surprise the other, and nothing outside the family can collide with it.
  *
@@ -23,45 +23,45 @@
 
 :root {
 	/* Surfaces */
-	--dahu-admin-surface: #fff;
-	--dahu-admin-surface-sunken: #f6f7f7;
-	--dahu-admin-border: #dcdcde;
-	--dahu-admin-border-strong: #c3c4c7;
+	--ubac-admin-surface: #fff;
+	--ubac-admin-surface-sunken: #f6f7f7;
+	--ubac-admin-border: #dcdcde;
+	--ubac-admin-border-strong: #c3c4c7;
 
 	/* Text */
-	--dahu-admin-text: #1d2327;
-	--dahu-admin-text-muted: #646970;
+	--ubac-admin-text: #1d2327;
+	--ubac-admin-text-muted: #646970;
 
 	/* Intent */
-	--dahu-admin-accent: #2271b1;
-	--dahu-admin-accent-text: #fff;
-	--dahu-admin-success: #008a20;
-	--dahu-admin-warning: #b32d2e;
-	--dahu-admin-caution: #996800;
-	--dahu-admin-neutral: #50575e;
+	--ubac-admin-accent: #2271b1;
+	--ubac-admin-accent-text: #fff;
+	--ubac-admin-success: #008a20;
+	--ubac-admin-warning: #b32d2e;
+	--ubac-admin-caution: #996800;
+	--ubac-admin-neutral: #50575e;
 
 	/* Shape */
-	--dahu-admin-radius: 4px;
-	--dahu-admin-radius-lg: 6px;
-	--dahu-admin-shadow: 0 1px 2px rgba( 0, 0, 0, .06 );
-	--dahu-admin-shadow-lg: 0 6px 20px rgba( 0, 0, 0, .16 );
+	--ubac-admin-radius: 4px;
+	--ubac-admin-radius-lg: 6px;
+	--ubac-admin-shadow: 0 1px 2px rgba( 0, 0, 0, .06 );
+	--ubac-admin-shadow-lg: 0 6px 20px rgba( 0, 0, 0, .16 );
 
 	/* Rhythm */
-	--dahu-admin-gap: 8px;
-	--dahu-admin-gap-lg: 14px;
+	--ubac-admin-gap: 8px;
+	--ubac-admin-gap-lg: 14px;
 
 	/* Reading widths */
-	--dahu-admin-measure: 900px;
-	--dahu-admin-measure-wide: 1100px;
+	--ubac-admin-measure: 900px;
+	--ubac-admin-measure-wide: 1100px;
 
 	/* Motion. Short, and switched off below for anybody who asked. */
-	--dahu-admin-transition: .15s ease;
+	--ubac-admin-transition: .15s ease;
 }
 
 @media ( prefers-reduced-motion: reduce ) {
 
 	:root {
-		--dahu-admin-transition: 0s;
+		--ubac-admin-transition: 0s;
 	}
 }
 
@@ -69,23 +69,23 @@
  * The snapshots screen
  * ------------------------------------------------------------------------ */
 
-.dahu-rb-table {
-	max-width: var( --dahu-admin-measure );
+.ubac-rb-table {
+	max-width: var( --ubac-admin-measure );
 }
 
-.dahu-rb-col-label {
+.ubac-rb-col-label {
 	width: 280px;
 }
 
-.dahu-rb-col-label--wide {
+.ubac-rb-col-label--wide {
 	width: 320px;
 }
 
-.dahu-rb-form {
+.ubac-rb-form {
 	margin: 20px 0;
 }
 
-.dahu-rb-form--spaced {
+.ubac-rb-form--spaced {
 	margin-top: 20px;
 }
 
@@ -96,18 +96,18 @@
  * DELETE roles. Sitting flush under the additive restore it looked like one
  * more variant of it.
  */
-.dahu-rb-form--danger {
+.ubac-rb-form--danger {
 	margin-top: 28px;
 	padding-top: 16px;
-	border-top: 1px solid var( --dahu-admin-border );
+	border-top: 1px solid var( --ubac-admin-border );
 }
 
 /*
  * Something missing, or about to be lost: no snapshot at all, no scheduled
  * run, a role the full restore would delete.
  */
-.dahu-rb-warning {
-	color: var( --dahu-admin-warning );
+.ubac-rb-warning {
+	color: var( --ubac-admin-warning );
 }
 
 /*
@@ -119,8 +119,8 @@
  * mean editing the shared block in eight files; naming the class for what it
  * means costs nothing and says the same thing.
  */
-.dahu-rb-protected {
-	color: var( --dahu-admin-caution );
+.ubac-rb-protected {
+	color: var( --ubac-admin-caution );
 }
 
 /* --- The snapshot list ------------------------------------------------- */
@@ -130,8 +130,8 @@
  * puts the date at one edge and its action at the other, and the eye has to
  * cross the screen to join them.
  */
-.dahu-rb-snapshots {
-	max-width: var( --dahu-admin-measure-wide );
+.ubac-rb-snapshots {
+	max-width: var( --ubac-admin-measure-wide );
 }
 
 /*
@@ -139,7 +139,7 @@
  * previous version stacked thirty-five identical buttons, which ranked
  * nothing and set the column width into the bargain.
  */
-.dahu-rb-snapshots__action {
+.ubac-rb-snapshots__action {
 	white-space: nowrap;
 	text-align: right;
 }
@@ -150,24 +150,24 @@
  * class left the heading over on the left while the figures sat on the right.
  * Seen in a browser, not assumed.
  */
-.dahu-rb-snapshots th.dahu-rb-snapshots__num,
-.dahu-rb-snapshots td.dahu-rb-snapshots__num {
+.ubac-rb-snapshots th.ubac-rb-snapshots__num,
+.ubac-rb-snapshots td.ubac-rb-snapshots__num {
 	width: 6em;
 	text-align: right;
 	font-variant-numeric: tabular-nums;
 }
 
-.dahu-rb-snapshots__size {
-	color: var( --dahu-admin-text-muted );
+.ubac-rb-snapshots__size {
+	color: var( --ubac-admin-text-muted );
 	font-variant-numeric: tabular-nums;
 }
 
-.dahu-rb-protected {
-	color: var( --dahu-admin-caution );
+.ubac-rb-protected {
+	color: var( --ubac-admin-caution );
 }
 
-.dahu-rb-legend {
-	max-width: var( --dahu-admin-measure );
-	margin-top: var( --dahu-admin-gap );
-	color: var( --dahu-admin-text-muted );
+.ubac-rb-legend {
+	max-width: var( --ubac-admin-measure );
+	margin-top: var( --ubac-admin-gap );
+	color: var( --ubac-admin-text-muted );
 }

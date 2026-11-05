@@ -2,7 +2,7 @@
 /**
  * Restoring roles from a snapshot.
  *
- * @package DahuRoleBackup
+ * @package UbacRoleBackup
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -28,14 +28,14 @@ defined( 'ABSPATH' ) || exit;
  * @param bool   $full     True to replace the whole option instead of adding.
  * @return array|WP_Error Result array, or WP_Error when the snapshot is unusable.
  */
-function dahu_role_backup_restore( $filename, $full = false ) {
-    $snapshot = dahu_role_backup_load( $filename );
+function ubac_role_backup_restore( $filename, $full = false ) {
+    $snapshot = ubac_role_backup_load( $filename );
 
     if ( is_wp_error( $snapshot ) ) {
         return $snapshot;
     }
 
-    $origin = dahu_role_backup_check_origin( $snapshot );
+    $origin = ubac_role_backup_check_origin( $snapshot );
 
     if ( is_wp_error( $origin ) ) {
         return $origin;
@@ -47,42 +47,42 @@ function dahu_role_backup_restore( $filename, $full = false ) {
     // fail to see a role: it erases it. Both branches below write that
     // option — add_role() through the core API, update_option() directly —
     // so both would restore from, and write back, whatever the copy had not
-    // heard about. See dahu_role_backup_reload_roles().
-    dahu_role_backup_reload_roles();
+    // heard about. See ubac_role_backup_reload_roles().
+    ubac_role_backup_reload_roles();
 
     // A safety net for the safety net: the current state is frozen before any
     // change is made, so a restore that goes wrong stays reversible.
-    $current = dahu_role_backup_read_current();
+    $current = ubac_role_backup_read_current();
 
     if ( ! empty( $current ) ) {
-        dahu_role_backup_write( 'manual', $current, array(
+        ubac_role_backup_write( 'manual', $current, array(
             'evenement' => 'avant_restauration',
             'source'    => $snapshot['file'],
         ) );
     }
 
-    $diff = dahu_role_backup_diff( $snapshot );
+    $diff = ubac_role_backup_diff( $snapshot );
 
     if ( $full ) {
-        $ok = update_option( dahu_role_backup_option_name(), $snapshot['roles'] );
+        $ok = update_option( ubac_role_backup_option_name(), $snapshot['roles'] );
 
         // Writing the option directly leaves WP_Roles holding the state from
         // before the restore. The next write of that option in this request —
         // one add_cap() is enough — would rewrite the table from that copy and
         // undo everything just restored.
-        dahu_role_backup_reload_roles();
+        ubac_role_backup_reload_roles();
 
-        dahu_role_backup_log( sprintf(
+        ubac_role_backup_log( sprintf(
             'FULL RESTORE from %1$s | roles restored: %2$s | roles overwritten: %3$s | %4$s',
             $snapshot['file'],
-            implode( ', ', dahu_role_backup_slugs( $snapshot['roles'] ) ),
+            implode( ', ', ubac_role_backup_slugs( $snapshot['roles'] ) ),
             empty( $diff['nouveaux'] ) ? '(none)' : implode( ', ', $diff['nouveaux'] ),
-            dahu_role_backup_context()
+            ubac_role_backup_context()
         ) );
 
         return array(
             'mode'      => 'full',
-            'restaures' => dahu_role_backup_slugs( $snapshot['roles'] ),
+            'restaures' => ubac_role_backup_slugs( $snapshot['roles'] ),
             'supprimes' => $diff['nouveaux'],
             'ecrit'     => (bool) $ok,
         );
@@ -121,12 +121,12 @@ function dahu_role_backup_restore( $filename, $full = false ) {
         }
     }
 
-    dahu_role_backup_log( sprintf(
+    ubac_role_backup_log( sprintf(
         'ADDITIVE RESTORE from %1$s | restored: %2$s | failures: %3$s | %4$s',
         $snapshot['file'],
         empty( $restored ) ? '(none)' : implode( ', ', $restored ),
         empty( $failed ) ? '(none)' : implode( ', ', $failed ),
-        dahu_role_backup_context()
+        ubac_role_backup_context()
     ) );
 
     return array(

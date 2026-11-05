@@ -2,7 +2,7 @@
 /**
  * WP-CLI commands.
  *
- * @package DahuRoleBackup
+ * @package UbacRoleBackup
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -16,7 +16,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
     /**
      * Backs up and restores WordPress roles.
      */
-    class Dahu_Role_Backup_CLI {
+    class Ubac_Role_Backup_CLI {
 
         /**
          * Lists the available snapshots.
@@ -28,21 +28,21 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
          *
          * ## EXAMPLES
          *
-         *     wp dahu-role-backup list
+         *     wp ubac-role-backup list
          *
          * @param array $args       Positional arguments (unused).
          * @param array $assoc_args Associative arguments.
          * @return void
          */
         public function list( $args, $assoc_args ) {
-            $all = dahu_role_backup_list();
+            $all = ubac_role_backup_list();
 
             if ( empty( $all ) ) {
                 WP_CLI::warning( __( 'No snapshot.', 'ubac-role-backup' ) );
                 return;
             }
 
-            $best = dahu_role_backup_best_recent( $all );
+            $best = ubac_role_backup_best_recent( $all );
             $rows = array();
 
             foreach ( $all as $meta ) {
@@ -65,12 +65,12 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
          *
          * ## EXAMPLES
          *
-         *     wp dahu-role-backup snapshot
+         *     wp ubac-role-backup snapshot
          *
          * @return void
          */
         public function snapshot() {
-            $result = dahu_role_backup_write( 'manual', dahu_role_backup_read_current(), array( 'evenement' => 'wp-cli' ) );
+            $result = ubac_role_backup_write( 'manual', ubac_role_backup_read_current(), array( 'evenement' => 'wp-cli' ) );
 
             if ( is_wp_error( $result ) ) {
                 WP_CLI::error( $result->get_error_message() );
@@ -103,19 +103,19 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
          *
          * ## EXAMPLES
          *
-         *     wp dahu-role-backup diff dahu-roles-daily-20260907-031500-r11-a1b2c3d4.json
+         *     wp ubac-role-backup diff ubac-roles-daily-20260907-031500-r11-a1b2c3d4.json
          *
          * @param array $args Positional arguments; the snapshot file name.
          * @return void
          */
         public function diff( $args ) {
-            $snapshot = dahu_role_backup_load( $args[0] );
+            $snapshot = ubac_role_backup_load( $args[0] );
 
             if ( is_wp_error( $snapshot ) ) {
                 WP_CLI::error( $snapshot->get_error_message() );
             }
 
-            $diff = dahu_role_backup_diff( $snapshot );
+            $diff = ubac_role_backup_diff( $snapshot );
 
             $none = __( '(none)', 'ubac-role-backup' );
 
@@ -156,8 +156,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
          *
          * ## EXAMPLES
          *
-         *     wp dahu-role-backup restore dahu-roles-change-20260907-031500-r11-a1b2c3d4.json
-         *     wp dahu-role-backup restore <file> --full
+         *     wp ubac-role-backup restore ubac-roles-change-20260907-031500-r11-a1b2c3d4.json
+         *     wp ubac-role-backup restore <file> --full
          *
          * @param array $args       Positional arguments; the snapshot file name.
          * @param array $assoc_args Associative arguments (full, yes).
@@ -167,19 +167,19 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
             $file = $args[0];
             $full = isset( $assoc_args['full'] );
 
-            $snapshot = dahu_role_backup_load( $file );
+            $snapshot = ubac_role_backup_load( $file );
 
             if ( is_wp_error( $snapshot ) ) {
                 WP_CLI::error( $snapshot->get_error_message() );
             }
 
-            $origin = dahu_role_backup_check_origin( $snapshot );
+            $origin = ubac_role_backup_check_origin( $snapshot );
 
             if ( is_wp_error( $origin ) ) {
                 WP_CLI::error( $origin->get_error_message() );
             }
 
-            $diff = dahu_role_backup_diff( $snapshot );
+            $diff = ubac_role_backup_diff( $snapshot );
 
             $none = __( '(none)', 'ubac-role-backup' );
 
@@ -198,7 +198,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
                 ) );
             }
 
-            $result = dahu_role_backup_restore( $file, $full );
+            $result = ubac_role_backup_restore( $file, $full );
 
             if ( is_wp_error( $result ) ) {
                 WP_CLI::error( $result->get_error_message() );
@@ -225,5 +225,5 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
         }
     }
 
-    WP_CLI::add_command( 'dahu-role-backup', 'Dahu_Role_Backup_CLI' );
+    WP_CLI::add_command( 'ubac-role-backup', 'Ubac_Role_Backup_CLI' );
 }

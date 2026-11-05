@@ -2,7 +2,7 @@
 /**
  * Taking a snapshot, and reading one back.
  *
- * @package DahuRoleBackup
+ * @package UbacRoleBackup
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * @param array $roles Roles array to fingerprint.
  * @return string SHA-1 of the normalised roles, or '' when the input is not an array.
  */
-function dahu_role_backup_checksum( $roles ) {
+function ubac_role_backup_checksum( $roles ) {
     if ( ! is_array( $roles ) ) {
         return '';
     }
@@ -46,7 +46,7 @@ function dahu_role_backup_checksum( $roles ) {
  * @param array $roles Roles array, keyed by slug.
  * @return array<int, string> Sorted slugs.
  */
-function dahu_role_backup_slugs( $roles ) {
+function ubac_role_backup_slugs( $roles ) {
     if ( ! is_array( $roles ) ) {
         return array();
     }
@@ -68,9 +68,9 @@ function dahu_role_backup_slugs( $roles ) {
  * @param string $checksum Full fingerprint; only its first 8 characters are used.
  * @return string File name, extension included.
  */
-function dahu_role_backup_filename( $type, $count, $checksum ) {
+function ubac_role_backup_filename( $type, $count, $checksum ) {
     return sprintf(
-        'dahu-roles-%s-%s-r%d-%s.json',
+        'ubac-roles-%s-%s-r%d-%s.json',
         $type,
         gmdate( 'Ymd-His' ),
         (int) $count,
@@ -88,8 +88,8 @@ function dahu_role_backup_filename( $type, $count, $checksum ) {
  * @param string $filename Bare file name, no path.
  * @return array|false Metadata (file, type, timestamp, count, checksum), or false.
  */
-function dahu_role_backup_parse_filename( $filename ) {
-    $pattern = '/^dahu-roles-(daily|change|manual)-(\d{8})-(\d{6})-r(\d+)-([0-9a-f]{8})\.json$/';
+function ubac_role_backup_parse_filename( $filename ) {
+    $pattern = '/^ubac-roles-(daily|change|manual)-(\d{8})-(\d{6})-r(\d+)-([0-9a-f]{8})\.json$/';
 
     if ( ! preg_match( $pattern, $filename, $m ) ) {
         return false;
@@ -112,8 +112,8 @@ function dahu_role_backup_parse_filename( $filename ) {
  * @param string|null $type Restrict to one kind, or null for all of them.
  * @return array<int, array> Metadata, each entry with its path and size added.
  */
-function dahu_role_backup_list( $type = null ) {
-    $dir = dahu_role_backup_dir();
+function ubac_role_backup_list( $type = null ) {
+    $dir = ubac_role_backup_dir();
 
     if ( ! is_dir( $dir ) ) {
         return array();
@@ -122,7 +122,7 @@ function dahu_role_backup_list( $type = null ) {
     $out = array();
 
     foreach ( (array) scandir( $dir ) as $entry ) {
-        $meta = dahu_role_backup_parse_filename( $entry );
+        $meta = ubac_role_backup_parse_filename( $entry );
         if ( ! $meta ) {
             continue;
         }
@@ -152,17 +152,17 @@ function dahu_role_backup_list( $type = null ) {
  * @param array  $extra Extra metadata (roles lost or added, and so on).
  * @return array|WP_Error Result array, or WP_Error when nothing could be written.
  */
-function dahu_role_backup_write( $type, $roles, $extra = array() ) {
+function ubac_role_backup_write( $type, $roles, $extra = array() ) {
     if ( ! is_array( $roles ) || empty( $roles ) ) {
-        return new WP_Error( 'dahu_role_backup_vide', __( 'Refusing to write an empty or invalid snapshot.', 'ubac-role-backup' ) );
+        return new WP_Error( 'ubac_role_backup_vide', __( 'Refusing to write an empty or invalid snapshot.', 'ubac-role-backup' ) );
     }
 
-    if ( ! dahu_role_backup_ensure_dir() ) {
-        return new WP_Error( 'dahu_role_backup_dir', __( 'Snapshot directory missing or not writable: ', 'ubac-role-backup' ) . dahu_role_backup_dir() );
+    if ( ! ubac_role_backup_ensure_dir() ) {
+        return new WP_Error( 'ubac_role_backup_dir', __( 'Snapshot directory missing or not writable: ', 'ubac-role-backup' ) . ubac_role_backup_dir() );
     }
 
-    $checksum = dahu_role_backup_checksum( $roles );
-    $existing = dahu_role_backup_list();
+    $checksum = ubac_role_backup_checksum( $roles );
+    $existing = ubac_role_backup_list();
 
     // Deduplication: when the most recent snapshot carries the same
     // fingerprint, nothing has changed and nothing is written. Indispensable
@@ -181,47 +181,47 @@ function dahu_role_backup_write( $type, $roles, $extra = array() ) {
     $payload = array_merge(
         array(
             'format'       => 1,
-            'generateur'   => 'dahu-role-backup ' . DAHU_ROLE_BACKUP_VERSION,
+            'generateur'   => 'ubac-role-backup ' . UBAC_ROLE_BACKUP_VERSION,
             'type'         => $type,
             'date_utc'     => gmdate( 'c' ),
             'site_url'     => get_site_url(),
             'table_prefix' => $wpdb->get_blog_prefix(),
-            'option_name'  => dahu_role_backup_option_name(),
+            'option_name'  => ubac_role_backup_option_name(),
             'role_count'   => count( $roles ),
-            'role_slugs'   => dahu_role_backup_slugs( $roles ),
+            'role_slugs'   => ubac_role_backup_slugs( $roles ),
             'checksum'     => $checksum,
-            'contexte'     => dahu_role_backup_context(),
+            'contexte'     => ubac_role_backup_context(),
         ),
         $extra,
         array( 'roles' => $roles )
     );
 
-    $filename = dahu_role_backup_filename( $type, count( $roles ), $checksum );
-    $path     = dahu_role_backup_dir() . '/' . $filename;
+    $filename = ubac_role_backup_filename( $type, count( $roles ), $checksum );
+    $path     = ubac_role_backup_dir() . '/' . $filename;
 
     $json = wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
     if ( false === $json || false === @file_put_contents( $path, $json ) ) {
-        return new WP_Error( 'dahu_role_backup_ecriture', __( 'Could not write ', 'ubac-role-backup' ) . $path );
+        return new WP_Error( 'ubac_role_backup_ecriture', __( 'Could not write ', 'ubac-role-backup' ) . $path );
     }
 
-    update_option( 'dahu_role_backup_last', array(
+    update_option( 'ubac_role_backup_last', array(
         'file'     => $filename,
         'time'     => time(),
         'count'    => count( $roles ),
         'checksum' => $checksum,
     ), false );
 
-    dahu_role_backup_log( sprintf(
+    ubac_role_backup_log( sprintf(
         'SNAPSHOT %1$s: %2$s (%3$d roles: %4$s) | %5$s',
         strtoupper( $type ),
         $filename,
         count( $roles ),
-        implode( ', ', dahu_role_backup_slugs( $roles ) ),
-        dahu_role_backup_context()
+        implode( ', ', ubac_role_backup_slugs( $roles ) ),
+        ubac_role_backup_context()
     ) );
 
-    dahu_role_backup_prune();
+    ubac_role_backup_prune();
 
     return array(
         'skipped' => false,
@@ -246,8 +246,8 @@ function dahu_role_backup_write( $type, $roles, $extra = array() ) {
  *
  * @return array Roles currently stored, or an empty array.
  */
-function dahu_role_backup_read_current() {
-    return dahu_role_backup_read_db_roles();
+function ubac_role_backup_read_current() {
+    return ubac_role_backup_read_db_roles();
 }
 
 
@@ -265,23 +265,23 @@ function dahu_role_backup_read_current() {
  * @param string $filename Bare file name, no path.
  * @return array|WP_Error Decoded snapshot with file and path added, or WP_Error.
  */
-function dahu_role_backup_load( $filename ) {
+function ubac_role_backup_load( $filename ) {
     $filename = basename( (string) $filename );
 
-    if ( ! dahu_role_backup_parse_filename( $filename ) ) {
-        return new WP_Error( 'dahu_role_backup_nom', __( 'Invalid snapshot name.', 'ubac-role-backup' ) );
+    if ( ! ubac_role_backup_parse_filename( $filename ) ) {
+        return new WP_Error( 'ubac_role_backup_nom', __( 'Invalid snapshot name.', 'ubac-role-backup' ) );
     }
 
-    $path = dahu_role_backup_dir() . '/' . $filename;
+    $path = ubac_role_backup_dir() . '/' . $filename;
 
     if ( ! is_readable( $path ) ) {
-        return new WP_Error( 'dahu_role_backup_absent', __( 'Snapshot not found: ', 'ubac-role-backup' ) . $filename );
+        return new WP_Error( 'ubac_role_backup_absent', __( 'Snapshot not found: ', 'ubac-role-backup' ) . $filename );
     }
 
     $data = json_decode( (string) file_get_contents( $path ), true );
 
     if ( ! is_array( $data ) || empty( $data['roles'] ) || ! is_array( $data['roles'] ) ) {
-        return new WP_Error( 'dahu_role_backup_corrompu', __( 'Snapshot unreadable or corrupted: ', 'ubac-role-backup' ) . $filename );
+        return new WP_Error( 'ubac_role_backup_corrompu', __( 'Snapshot unreadable or corrupted: ', 'ubac-role-backup' ) . $filename );
     }
 
     $data['file'] = $filename;
@@ -302,18 +302,18 @@ function dahu_role_backup_load( $filename ) {
  * @param array $snapshot Loaded snapshot.
  * @return true|WP_Error True when the snapshot belongs here, WP_Error otherwise.
  */
-function dahu_role_backup_check_origin( $snapshot ) {
+function ubac_role_backup_check_origin( $snapshot ) {
     global $wpdb;
 
     $expected_prefix = $wpdb->get_blog_prefix();
-    $expected_option = dahu_role_backup_option_name();
+    $expected_option = ubac_role_backup_option_name();
 
     $found_prefix = isset( $snapshot['table_prefix'] ) ? $snapshot['table_prefix'] : '';
     $found_option = isset( $snapshot['option_name'] ) ? $snapshot['option_name'] : '';
 
     if ( $found_prefix !== $expected_prefix || $found_option !== $expected_option ) {
         return new WP_Error(
-            'dahu_role_backup_origine',
+            'ubac_role_backup_origine',
             sprintf(
                 /* translators: 1: table prefix stored in the snapshot, 2: option name stored in the snapshot, 3: table prefix of this installation, 4: option name of this installation. */
                 __( 'This snapshot comes from ANOTHER installation and cannot be restored here. Snapshot: prefix "%1$s", option "%2$s". This installation: prefix "%3$s", option "%4$s".', 'ubac-role-backup' ),
@@ -338,11 +338,11 @@ function dahu_role_backup_check_origin( $snapshot ) {
  * @param array $snapshot Loaded snapshot.
  * @return array{manquants: array, nouveaux: array, communs: array}
  */
-function dahu_role_backup_diff( $snapshot ) {
-    $current = dahu_role_backup_read_current();
+function ubac_role_backup_diff( $snapshot ) {
+    $current = ubac_role_backup_read_current();
 
-    $in_snapshot = dahu_role_backup_slugs( $snapshot['roles'] );
-    $in_current  = dahu_role_backup_slugs( $current );
+    $in_snapshot = ubac_role_backup_slugs( $snapshot['roles'] );
+    $in_current  = ubac_role_backup_slugs( $current );
 
     return array(
         'manquants' => array_values( array_diff( $in_snapshot, $in_current ) ),
@@ -362,8 +362,8 @@ function dahu_role_backup_diff( $snapshot ) {
  * @param string $file Snapshot file name.
  * @return string
  */
-function dahu_role_backup_rescue_reason( $file ) {
-    $snapshot = dahu_role_backup_load( $file );
+function ubac_role_backup_rescue_reason( $file ) {
+    $snapshot = ubac_role_backup_load( $file );
 
     if ( is_wp_error( $snapshot ) || ! is_array( $snapshot ) ) {
         return '';

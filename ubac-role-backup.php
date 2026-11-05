@@ -12,16 +12,16 @@
  * Requires at least: 6.0
  * Requires PHP:      7.4
  *
- * @package DahuRoleBackup
+ * @package UbacRoleBackup
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DAHU_ROLE_BACKUP_VERSION', '2.3.1' );
-define( 'DAHU_ROLE_BACKUP_FILE', __FILE__ );
-define( 'DAHU_ROLE_BACKUP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'DAHU_ROLE_BACKUP_URL', plugin_dir_url( __FILE__ ) );
-define( 'DAHU_ROLE_BACKUP_SLUG', 'dahu-role-backup' );
+define( 'UBAC_ROLE_BACKUP_VERSION', '2.3.1' );
+define( 'UBAC_ROLE_BACKUP_FILE', __FILE__ );
+define( 'UBAC_ROLE_BACKUP_PATH', plugin_dir_path( __FILE__ ) );
+define( 'UBAC_ROLE_BACKUP_URL', plugin_dir_url( __FILE__ ) );
+define( 'UBAC_ROLE_BACKUP_SLUG', 'ubac-role-backup' );
 
 /**
  * How many snapshots the list shows before offering to show the rest.
@@ -30,26 +30,26 @@ define( 'DAHU_ROLE_BACKUP_SLUG', 'dahu-role-backup' );
  * reach sixty rows of near-identical file names. The snapshot somebody wants is
  * almost always one of the most recent few.
  */
-define( 'DAHU_ROLE_BACKUP_LIST_LIMIT', 20 );
+define( 'UBAC_ROLE_BACKUP_LIST_LIMIT', 20 );
 
 /** Cron hook taking the daily snapshot. */
-define( 'DAHU_ROLE_BACKUP_CRON', 'dahu_role_backup_daily' );
+define( 'UBAC_ROLE_BACKUP_CRON', 'ubac_role_backup_daily' );
 
 /**
  * Retention.
  *
  * Snapshots are capped per kind, but the best recent one is protected on top
- * of that (see dahu_role_backup_prune). Without that exception, a run of
+ * of that (see ubac_role_backup_prune). Without that exception, a run of
  * repeated disappearances would rotate the retention until no copy held the
  * lost roles any more: the safety net would quietly empty itself at exactly
  * the moment it was needed.
  */
-define( 'DAHU_ROLE_BACKUP_KEEP_DAILY', 30 );
-define( 'DAHU_ROLE_BACKUP_KEEP_CHANGE', 30 );
-define( 'DAHU_ROLE_BACKUP_BEST_WINDOW_DAYS', 90 );
+define( 'UBAC_ROLE_BACKUP_KEEP_DAILY', 30 );
+define( 'UBAC_ROLE_BACKUP_KEEP_CHANGE', 30 );
+define( 'UBAC_ROLE_BACKUP_BEST_WINDOW_DAYS', 90 );
 
 /** Beyond this, the last snapshot is considered too old and a notice is shown. */
-define( 'DAHU_ROLE_BACKUP_STALE_HOURS', 48 );
+define( 'UBAC_ROLE_BACKUP_STALE_HOURS', 48 );
 
 /* -------------------------------------------------------------------------
  * Translations
@@ -65,25 +65,25 @@ define( 'DAHU_ROLE_BACKUP_STALE_HOURS', 48 );
  * Modules
  * ---------------------------------------------------------------------- */
 
-require_once DAHU_ROLE_BACKUP_PATH . 'includes/storage.php';
-require_once DAHU_ROLE_BACKUP_PATH . 'includes/snapshot.php';
-require_once DAHU_ROLE_BACKUP_PATH . 'includes/restore.php';
-require_once DAHU_ROLE_BACKUP_PATH . 'includes/schedule.php';
+require_once UBAC_ROLE_BACKUP_PATH . 'includes/storage.php';
+require_once UBAC_ROLE_BACKUP_PATH . 'includes/snapshot.php';
+require_once UBAC_ROLE_BACKUP_PATH . 'includes/restore.php';
+require_once UBAC_ROLE_BACKUP_PATH . 'includes/schedule.php';
 
 if ( is_admin() ) {
-	require_once DAHU_ROLE_BACKUP_PATH . 'includes/admin.php';
+	require_once UBAC_ROLE_BACKUP_PATH . 'includes/admin.php';
 }
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once DAHU_ROLE_BACKUP_PATH . 'includes/cli.php';
+	require_once UBAC_ROLE_BACKUP_PATH . 'includes/cli.php';
 }
 
 /* -------------------------------------------------------------------------
  * Lifecycle
  * ---------------------------------------------------------------------- */
 
-register_activation_hook( __FILE__, 'dahu_role_backup_activate' );
-register_deactivation_hook( __FILE__, 'dahu_role_backup_deactivate' );
+register_activation_hook( __FILE__, 'ubac_role_backup_activate' );
+register_deactivation_hook( __FILE__, 'ubac_role_backup_deactivate' );
 
 /**
  * URL of the plugin's admin screen.
@@ -93,9 +93,9 @@ register_deactivation_hook( __FILE__, 'dahu_role_backup_deactivate' );
  * @param array<string, string> $args Extra query arguments.
  * @return string
  */
-function dahu_role_backup_url( $args = array() ) {
+function ubac_role_backup_url( $args = array() ) {
 	return add_query_arg(
-		array_merge( array( 'page' => DAHU_ROLE_BACKUP_SLUG ), $args ),
+		array_merge( array( 'page' => UBAC_ROLE_BACKUP_SLUG ), $args ),
 		admin_url( 'tools.php' )
 	);
 }
@@ -109,7 +109,7 @@ add_filter(
 	static function ( $links ) {
 		$page = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( dahu_role_backup_url() ),
+			esc_url( ubac_role_backup_url() ),
 			esc_html__( 'Snapshots', 'ubac-role-backup' )
 		);
 		array_unshift( $links, $page );
@@ -155,7 +155,7 @@ add_filter(
  * Registered here rather than inside the admin include, because the
  * activation flag has to be set whatever else is loaded.
  */
-require_once DAHU_ROLE_BACKUP_PATH . 'includes/dahu-welcome.php';
+require_once UBAC_ROLE_BACKUP_PATH . 'includes/ubac-welcome.php';
 
 /*
  * The flag, not a redirect: an activation hook that redirects breaks bulk
@@ -166,21 +166,21 @@ require_once DAHU_ROLE_BACKUP_PATH . 'includes/dahu-welcome.php';
 register_activation_hook(
 	__FILE__,
 	static function () {
-		Dahu_Welcome::mark_activated( 'dahu-role-backup' );
+		Ubac_Welcome::mark_activated( 'ubac-role-backup' );
 	}
 );
 
 add_action(
 	'init',
 	static function () {
-		Dahu_Welcome::register(
+		Ubac_Welcome::register(
 			array(
-				'slug'       => 'dahu-role-backup',
+				'slug'       => 'ubac-role-backup',
 				'name'       => __( 'Role snapshots', 'ubac-role-backup' ),
 				'tagline'    => __( 'A copy of every role, taken before anything can lose one.', 'ubac-role-backup' ),
-				'file'       => DAHU_ROLE_BACKUP_FILE,
-				'version'    => DAHU_ROLE_BACKUP_VERSION,
-				'textdomain' => 'dahu-role-backup',
+				'file'       => UBAC_ROLE_BACKUP_FILE,
+				'version'    => UBAC_ROLE_BACKUP_VERSION,
+				'textdomain' => 'ubac-role-backup',
 				'mark'       => array(
 					'view'  => '0 0 112 112',
 					'paths' => array(
@@ -195,20 +195,20 @@ add_action(
 				 * hurry, and the status table that shows it is running. A fourth stop would be a
 				 * manual.
 				 */
-				'tour_screen' => 'tools_page_dahu-role-backup',
+				'tour_screen' => 'tools_page_ubac-role-backup',
 				'tour'        => array(
 					array(
-						'selector' => '.dahu-ui-head__title',
+						'selector' => '.ubac-ui-head__title',
 						'title'    => __( 'It is already running', 'ubac-role-backup' ),
 						'text'     => __( 'A first snapshot was taken when you activated the plugin. Nothing here needs setting up.', 'ubac-role-backup' ),
 					),
 					array(
-						'selector' => '.dahu-rb-form button',
+						'selector' => '.ubac-rb-form button',
 						'title'    => __( 'Take one now', 'ubac-role-backup' ),
 						'text'     => __( 'Before you change roles by hand, or install something that might.', 'ubac-role-backup' ),
 					),
 					array(
-						'selector' => '.dahu-rb-table',
+						'selector' => '.ubac-rb-table',
 						'title'    => __( 'Check it is running', 'ubac-role-backup' ),
 						'text'     => __( 'The last snapshot, the next daily run and the roles stored today, at a glance.', 'ubac-role-backup' ),
 					),

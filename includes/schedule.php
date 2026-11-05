@@ -2,7 +2,7 @@
 /**
  * Triggers, plugin lifecycle and health checks.
  *
- * @package DahuRoleBackup
+ * @package UbacRoleBackup
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -16,16 +16,16 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return void
  */
-add_action( DAHU_ROLE_BACKUP_CRON, 'dahu_role_backup_run_daily' );
-function dahu_role_backup_run_daily() {
-    $roles = dahu_role_backup_read_current();
+add_action( UBAC_ROLE_BACKUP_CRON, 'ubac_role_backup_run_daily' );
+function ubac_role_backup_run_daily() {
+    $roles = ubac_role_backup_read_current();
 
     if ( empty( $roles ) ) {
-        dahu_role_backup_log( 'ALERT: the roles option is empty or unreadable, daily snapshot cancelled.' );
+        ubac_role_backup_log( 'ALERT: the roles option is empty or unreadable, daily snapshot cancelled.' );
         return;
     }
 
-    dahu_role_backup_write( 'daily', $roles );
+    ubac_role_backup_write( 'daily', $roles );
 }
 
 /**
@@ -47,13 +47,13 @@ function dahu_role_backup_run_daily() {
  *
  * @return void
  */
-add_action( 'plugins_loaded', 'dahu_role_backup_register_watcher', 1 );
-function dahu_role_backup_register_watcher() {
-    add_action( 'update_option_' . dahu_role_backup_option_name(), 'dahu_role_backup_on_option_update', 10, 3 );
+add_action( 'plugins_loaded', 'ubac_role_backup_register_watcher', 1 );
+function ubac_role_backup_register_watcher() {
+    add_action( 'update_option_' . ubac_role_backup_option_name(), 'ubac_role_backup_on_option_update', 10, 3 );
 
     // PHP_INT_MAX: last, so the value seen is the one that will be written
     // after every other filter has had its say.
-    add_filter( 'pre_update_option_' . dahu_role_backup_option_name(), 'dahu_role_backup_before_option_write', PHP_INT_MAX, 3 );
+    add_filter( 'pre_update_option_' . ubac_role_backup_option_name(), 'ubac_role_backup_before_option_write', PHP_INT_MAX, 3 );
 }
 
 /**
@@ -106,7 +106,7 @@ function dahu_role_backup_register_watcher() {
  * @param string $option    Option name.
  * @return mixed $value, untouched.
  */
-function dahu_role_backup_before_option_write( $value, $old_value, $option ) {
+function ubac_role_backup_before_option_write( $value, $old_value, $option ) {
     try {
         if ( ! is_array( $value ) ) {
             return $value;
@@ -136,7 +136,7 @@ function dahu_role_backup_before_option_write( $value, $old_value, $option ) {
             return $value;
         }
 
-        $lost = array_values( array_diff( dahu_role_backup_slugs( $database ), dahu_role_backup_slugs( $value ) ) );
+        $lost = array_values( array_diff( ubac_role_backup_slugs( $database ), ubac_role_backup_slugs( $value ) ) );
 
         if ( empty( $lost ) ) {
             return $value;
@@ -159,24 +159,24 @@ function dahu_role_backup_before_option_write( $value, $old_value, $option ) {
             return $value;
         }
 
-        dahu_role_backup_log( sprintf(
+        ubac_role_backup_log( sprintf(
             '!!! ROLES ABOUT TO BE LOST BY A STALE COPY !!! %1$s | in the database (%2$d): %3$s | in the write (%4$d): %5$s | %6$s',
             implode( ', ', $lost ),
-            count( dahu_role_backup_slugs( $database ) ),
-            implode( ', ', dahu_role_backup_slugs( $database ) ),
-            count( dahu_role_backup_slugs( $value ) ),
-            implode( ', ', dahu_role_backup_slugs( $value ) ),
-            dahu_role_backup_context()
+            count( ubac_role_backup_slugs( $database ) ),
+            implode( ', ', ubac_role_backup_slugs( $database ) ),
+            count( ubac_role_backup_slugs( $value ) ),
+            implode( ', ', ubac_role_backup_slugs( $value ) ),
+            ubac_role_backup_context()
         ) );
 
         // The database value, not the one this request holds: the request's
         // copy is the one that has already lost the role.
-        dahu_role_backup_write( 'change', $database, array(
+        ubac_role_backup_write( 'change', $database, array(
             'evenement'    => 'copie_perimee',
             'roles_perdus' => $lost,
         ) );
     } catch ( Throwable $e ) {
-        dahu_role_backup_log( sprintf( 'internal error ignored while watching a roles write: %s (%s:%d)', $e->getMessage(), $e->getFile(), $e->getLine() ) );
+        ubac_role_backup_log( sprintf( 'internal error ignored while watching a roles write: %s (%s:%d)', $e->getMessage(), $e->getFile(), $e->getLine() ) );
     }
 
     return $value;
@@ -190,13 +190,13 @@ function dahu_role_backup_before_option_write( $value, $old_value, $option ) {
  * @param string $option    Option name.
  * @return void
  */
-function dahu_role_backup_on_option_update( $old_value, $new_value, $option ) {
+function ubac_role_backup_on_option_update( $old_value, $new_value, $option ) {
     if ( ! is_array( $old_value ) || ! is_array( $new_value ) ) {
         return;
     }
 
-    $before = dahu_role_backup_slugs( $old_value );
-    $after  = dahu_role_backup_slugs( $new_value );
+    $before = ubac_role_backup_slugs( $old_value );
+    $after  = ubac_role_backup_slugs( $new_value );
 
     $removed = array_values( array_diff( $before, $after ) );
     $added   = array_values( array_diff( $after, $before ) );
@@ -210,17 +210,17 @@ function dahu_role_backup_on_option_update( $old_value, $new_value, $option ) {
     // frozen. The reduced state will be captured anyway by the next daily
     // snapshot.
     if ( ! empty( $removed ) ) {
-        dahu_role_backup_log( sprintf(
+        ubac_role_backup_log( sprintf(
             '!!! ROLES DELETED !!! %1$s | before (%2$d): %3$s | after (%4$d): %5$s | %6$s',
             implode( ', ', $removed ),
             count( $before ),
             implode( ', ', $before ),
             count( $after ),
             implode( ', ', $after ),
-            dahu_role_backup_context()
+            ubac_role_backup_context()
         ) );
 
-        dahu_role_backup_write( 'change', $old_value, array(
+        ubac_role_backup_write( 'change', $old_value, array(
             'evenement'    => 'roles_supprimes',
             'roles_perdus' => $removed,
         ) );
@@ -228,14 +228,14 @@ function dahu_role_backup_on_option_update( $old_value, $new_value, $option ) {
         return;
     }
 
-    dahu_role_backup_log( sprintf(
+    ubac_role_backup_log( sprintf(
         'Roles added: %1$s | total (%2$d) | %3$s',
         implode( ', ', $added ),
         count( $after ),
-        dahu_role_backup_context()
+        ubac_role_backup_context()
     ) );
 
-    dahu_role_backup_write( 'change', $new_value, array(
+    ubac_role_backup_write( 'change', $new_value, array(
         'evenement'     => 'roles_ajoutes',
         'roles_ajoutes' => $added,
     ) );
@@ -254,21 +254,21 @@ function dahu_role_backup_on_option_update( $old_value, $new_value, $option ) {
  *
  * @return void
  */
-function dahu_role_backup_activate() {
-    dahu_role_backup_ensure_dir();
+function ubac_role_backup_activate() {
+    ubac_role_backup_ensure_dir();
 
-    if ( ! wp_next_scheduled( DAHU_ROLE_BACKUP_CRON ) ) {
+    if ( ! wp_next_scheduled( UBAC_ROLE_BACKUP_CRON ) ) {
         // Offset slightly so it does not line up with the site's other daily
         // tasks.
-        wp_schedule_event( time() + 300, 'daily', DAHU_ROLE_BACKUP_CRON );
+        wp_schedule_event( time() + 300, 'daily', UBAC_ROLE_BACKUP_CRON );
     }
 
     // An immediate first snapshot: the plugin has to be useful from the second
     // after it is activated, not from the first cron run the next day.
-    $roles = dahu_role_backup_read_current();
+    $roles = ubac_role_backup_read_current();
 
     if ( ! empty( $roles ) ) {
-        dahu_role_backup_write( 'manual', $roles, array( 'evenement' => 'activation' ) );
+        ubac_role_backup_write( 'manual', $roles, array( 'evenement' => 'activation' ) );
     }
 }
 
@@ -278,17 +278,17 @@ function dahu_role_backup_activate() {
  *
  * @return void
  */
-function dahu_role_backup_deactivate() {
-    $timestamp = wp_next_scheduled( DAHU_ROLE_BACKUP_CRON );
+function ubac_role_backup_deactivate() {
+    $timestamp = wp_next_scheduled( UBAC_ROLE_BACKUP_CRON );
 
     if ( $timestamp ) {
-        wp_unschedule_event( $timestamp, DAHU_ROLE_BACKUP_CRON );
+        wp_unschedule_event( $timestamp, UBAC_ROLE_BACKUP_CRON );
     }
 
     // Snapshots are NEVER deleted on deactivation: they have to survive the
     // plugin being deactivated by accident, which is precisely one of the
     // scenarios they protect against.
-    dahu_role_backup_log( 'Plugin deactivated. Existing snapshots are kept.' );
+    ubac_role_backup_log( 'Plugin deactivated. Existing snapshots are kept.' );
 }
 /**
  * Defensive rescheduling: when the cron event has gone missing (a database
@@ -297,11 +297,11 @@ function dahu_role_backup_deactivate() {
  *
  * @return void
  */
-add_action( 'admin_init', 'dahu_role_backup_maybe_reschedule' );
-function dahu_role_backup_maybe_reschedule() {
-    if ( ! wp_next_scheduled( DAHU_ROLE_BACKUP_CRON ) ) {
-        wp_schedule_event( time() + 300, 'daily', DAHU_ROLE_BACKUP_CRON );
-        dahu_role_backup_log( 'Daily task missing: rescheduled automatically.' );
+add_action( 'admin_init', 'ubac_role_backup_maybe_reschedule' );
+function ubac_role_backup_maybe_reschedule() {
+    if ( ! wp_next_scheduled( UBAC_ROLE_BACKUP_CRON ) ) {
+        wp_schedule_event( time() + 300, 'daily', UBAC_ROLE_BACKUP_CRON );
+        ubac_role_backup_log( 'Daily task missing: rescheduled automatically.' );
     }
 }
 
@@ -314,8 +314,8 @@ function dahu_role_backup_maybe_reschedule() {
  *
  * @return int|null Age in seconds, or null when there is no snapshot at all.
  */
-function dahu_role_backup_last_age() {
-    $all = dahu_role_backup_list();
+function ubac_role_backup_last_age() {
+    $all = ubac_role_backup_list();
 
     if ( empty( $all ) ) {
         return null;
@@ -333,19 +333,19 @@ function dahu_role_backup_last_age() {
  *
  * @return void
  */
-add_action( 'admin_notices', 'dahu_role_backup_stale_notice' );
-function dahu_role_backup_stale_notice() {
+add_action( 'admin_notices', 'ubac_role_backup_stale_notice' );
+function ubac_role_backup_stale_notice() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
 
-    $age = dahu_role_backup_last_age();
+    $age = ubac_role_backup_last_age();
 
-    if ( null !== $age && $age < DAHU_ROLE_BACKUP_STALE_HOURS * HOUR_IN_SECONDS ) {
+    if ( null !== $age && $age < UBAC_ROLE_BACKUP_STALE_HOURS * HOUR_IN_SECONDS ) {
         return;
     }
 
-    $url = dahu_role_backup_url();
+    $url = ubac_role_backup_url();
 
     if ( null === $age ) {
         $state = esc_html__( 'no role snapshot has been recorded yet.', 'ubac-role-backup' );
@@ -366,7 +366,7 @@ function dahu_role_backup_stale_notice() {
     );
 
     printf(
-        '<div class="notice notice-warning"><p><strong>Dahu Role Backup</strong> — %1$s %2$s</p></div>',
+        '<div class="notice notice-warning"><p><strong>Ubac Role Backup</strong> — %1$s %2$s</p></div>',
         $state, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
         sprintf(
             /* translators: %s: link to the snapshots page, already marked up as an <a> element. */

@@ -1,5 +1,5 @@
 === Ubac Role Backup ===
-Contributors: dahuconcept
+Contributors: ubacconcept
 Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.0
 Tested up to: 7.1
@@ -17,7 +17,7 @@ writing to it carelessly, one migration, one badly timed update, and a role
 that half the site depends on is simply gone — with nothing to put back,
 because nobody ever thought to copy it.
 
-Dahu Role Backup copies it. Every day, and again whenever the option changes.
+Ubac Role Backup copies it. Every day, and again whenever the option changes.
 When a role disappears you open the list, compare, and put it back.
 
 = How it works =
@@ -44,7 +44,7 @@ safety net would quietly empty itself at exactly the moment it was needed.
 
 = Where snapshots are stored =
 
-Under `wp-content/dahu-role-backups/`, not in the uploads directory, which is
+Under `wp-content/ubac-role-backups/`, not in the uploads directory, which is
 served by the web server and swept up by synchronisation tools. Both an
 `.htaccess` and an `index.php` are placed there. On a host where `wp-content/`
 is read-only, the plugin falls back to the uploads directory rather than
@@ -52,10 +52,10 @@ failing silently, and the location is filterable.
 
 = WP-CLI =
 
-    wp dahu-role-backup list
-    wp dahu-role-backup snapshot
-    wp dahu-role-backup diff <file>
-    wp dahu-role-backup restore <file> [--full]
+    wp ubac-role-backup list
+    wp ubac-role-backup snapshot
+    wp ubac-role-backup diff <file>
+    wp ubac-role-backup restore <file> [--full]
 
 = External services =
 

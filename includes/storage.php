@@ -2,7 +2,7 @@
 /**
  * Storage: where snapshots live, the dedicated log, and retention.
  *
- * @package DahuRoleBackup
+ * @package UbacRoleBackup
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return string Option name, for example wp_user_roles.
  */
-function dahu_role_backup_option_name() {
+function ubac_role_backup_option_name() {
     global $wpdb;
     return $wpdb->get_blog_prefix() . 'user_roles';
 }
@@ -35,9 +35,9 @@ function dahu_role_backup_option_name() {
  *
  * @return string Absolute path, no trailing slash.
  */
-function dahu_role_backup_dir() {
+function ubac_role_backup_dir() {
 
-    $default = WP_CONTENT_DIR . '/dahu-role-backups';
+    $default = WP_CONTENT_DIR . '/ubac-role-backups';
 
     /**
      * Filters the directory holding the snapshots.
@@ -56,7 +56,7 @@ function dahu_role_backup_dir() {
      *
      * @param string $dir Absolute path, no trailing slash.
      */
-    $dir = (string) apply_filters( 'dahu_role_backup_directory', $default );
+    $dir = (string) apply_filters( 'ubac_role_backup_directory', $default );
 
     if ( $dir !== $default ) {
         return untrailingslashit( $dir );
@@ -69,7 +69,7 @@ function dahu_role_backup_dir() {
     $uploads = wp_upload_dir();
 
     if ( ! empty( $uploads['basedir'] ) && empty( $uploads['error'] ) ) {
-        return untrailingslashit( $uploads['basedir'] ) . '/dahu-role-backups';
+        return untrailingslashit( $uploads['basedir'] ) . '/ubac-role-backups';
     }
 
     return $dir;
@@ -83,8 +83,8 @@ function dahu_role_backup_dir() {
  *
  * @return bool True when the directory exists and is writable.
  */
-function dahu_role_backup_ensure_dir() {
-    $dir = dahu_role_backup_dir();
+function ubac_role_backup_ensure_dir() {
+    $dir = ubac_role_backup_dir();
 
     if ( ! is_dir( $dir ) && ! wp_mkdir_p( $dir ) ) {
         return false;
@@ -117,14 +117,14 @@ function dahu_role_backup_ensure_dir() {
  *
  * @return array Roles as stored, or an empty array when the row is missing.
  */
-function dahu_role_backup_read_db_roles() {
+function ubac_role_backup_read_db_roles() {
     global $wpdb;
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- reading past the object cache is the entire point.
     $raw = $wpdb->get_var(
         $wpdb->prepare(
             "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
-            dahu_role_backup_option_name()
+            ubac_role_backup_option_name()
         )
     );
 
@@ -161,7 +161,7 @@ function dahu_role_backup_read_db_roles() {
  *
  * @return void
  */
-function dahu_role_backup_reload_roles() {
+function ubac_role_backup_reload_roles() {
     $roles   = function_exists( 'wp_roles' ) ? wp_roles() : null;
     $site_id = get_current_blog_id();
 
@@ -171,7 +171,7 @@ function dahu_role_backup_reload_roles() {
 
     wp_cache_delete( 'alloptions', 'options' );
     wp_cache_delete( 'notoptions', 'options' );
-    wp_cache_delete( dahu_role_backup_option_name(), 'options' );
+    wp_cache_delete( ubac_role_backup_option_name(), 'options' );
 
     // And again, to load back what the table really holds now that the cache
     // no longer stands in the way.
@@ -202,8 +202,8 @@ function dahu_role_backup_reload_roles() {
  * @param string $message The line to record.
  * @return void
  */
-function dahu_role_backup_log( $message ) {
-    $file = dahu_role_backup_dir() . '/backup.log';
+function ubac_role_backup_log( $message ) {
+    $file = ubac_role_backup_dir() . '/backup.log';
 
     if ( file_exists( $file ) && filesize( $file ) > 2 * 1024 * 1024 ) {
         @rename( $file, $file . '.1' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- rotates the plugin's own log inside its private directory, from cron, where WP_Filesystem is not initialised.
@@ -216,7 +216,7 @@ function dahu_role_backup_log( $message ) {
     // the PHP log rather than losing the line. Both paths deliberate.
     if ( ! @error_log( $line, 3, $file ) ) {
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- See above.
-        error_log( '[Dahu Role Backup] ' . $message );
+        error_log( '[Ubac Role Backup] ' . $message );
     }
 }
 
@@ -228,7 +228,7 @@ function dahu_role_backup_log( $message ) {
  *
  * @return string
  */
-function dahu_role_backup_context() {
+function ubac_role_backup_context() {
     $bits = array();
 
     if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -277,21 +277,21 @@ function dahu_role_backup_context() {
  *
  * @return array<int, string> File names actually deleted.
  */
-function dahu_role_backup_prune() {
-    $all = dahu_role_backup_list();
+function ubac_role_backup_prune() {
+    $all = ubac_role_backup_list();
 
     if ( empty( $all ) ) {
         return array();
     }
 
     $limits = array(
-        'daily'  => DAHU_ROLE_BACKUP_KEEP_DAILY,
-        'change' => DAHU_ROLE_BACKUP_KEEP_CHANGE,
-        'manual' => DAHU_ROLE_BACKUP_KEEP_CHANGE,
+        'daily'  => UBAC_ROLE_BACKUP_KEEP_DAILY,
+        'change' => UBAC_ROLE_BACKUP_KEEP_CHANGE,
+        'manual' => UBAC_ROLE_BACKUP_KEEP_CHANGE,
     );
 
     // Protected snapshot: the richest in roles over the window.
-    $protected = dahu_role_backup_best_recent( $all );
+    $protected = ubac_role_backup_best_recent( $all );
 
     $seen    = array();
     $deleted = array();
@@ -304,14 +304,14 @@ function dahu_role_backup_prune() {
         }
         $seen[ $type ]++;
 
-        $limit = isset( $limits[ $type ] ) ? $limits[ $type ] : DAHU_ROLE_BACKUP_KEEP_CHANGE;
+        $limit = isset( $limits[ $type ] ) ? $limits[ $type ] : UBAC_ROLE_BACKUP_KEEP_CHANGE;
 
         if ( $seen[ $type ] <= $limit ) {
             continue;
         }
 
         if ( $protected && $meta['file'] === $protected['file'] ) {
-            dahu_role_backup_log( sprintf(
+            ubac_role_backup_log( sprintf(
                 'PURGE: %1$s kept despite the limit (best recent snapshot, %2$d roles).',
                 $meta['file'],
                 $meta['count']
@@ -333,7 +333,7 @@ function dahu_role_backup_prune() {
     }
 
     if ( ! empty( $deleted ) ) {
-        dahu_role_backup_log( sprintf(
+        ubac_role_backup_log( sprintf(
             'PURGE: snapshots deleted (%1$d): %2$s',
             count( $deleted ),
             implode( ', ', $deleted )
@@ -351,12 +351,12 @@ function dahu_role_backup_prune() {
  * @param array<int, array>|null $all Inventory to search, or null to read it.
  * @return array|null Snapshot metadata, or null when the window is empty.
  */
-function dahu_role_backup_best_recent( $all = null ) {
+function ubac_role_backup_best_recent( $all = null ) {
     if ( null === $all ) {
-        $all = dahu_role_backup_list();
+        $all = ubac_role_backup_list();
     }
 
-    $floor = time() - ( DAHU_ROLE_BACKUP_BEST_WINDOW_DAYS * DAY_IN_SECONDS );
+    $floor = time() - ( UBAC_ROLE_BACKUP_BEST_WINDOW_DAYS * DAY_IN_SECONDS );
     $best  = null;
 
     foreach ( $all as $meta ) {

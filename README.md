@@ -1,4 +1,4 @@
-# Dahu Role Backup
+# Ubac Role Backup
 
 A safety net for WordPress roles and capabilities.
 
@@ -49,13 +49,13 @@ were about to go.
 
 ## Storage
 
-Under `wp-content/dahu-role-backups/`, not in uploads, which is served by the
+Under `wp-content/ubac-role-backups/`, not in uploads, which is served by the
 web server and swept up by synchronisation tools. An `.htaccess` and an
 `index.php` are placed there. On a host where `wp-content/` is read-only the
 plugin falls back to the uploads directory rather than failing silently.
 
 ```php
-add_filter( 'dahu_role_backup_directory', function () {
+add_filter( 'ubac_role_backup_directory', function () {
     return '/some/path/outside/the/webroot';
 } );
 ```
@@ -63,10 +63,10 @@ add_filter( 'dahu_role_backup_directory', function () {
 ## WP-CLI
 
 ```
-wp dahu-role-backup list
-wp dahu-role-backup snapshot
-wp dahu-role-backup diff <file>
-wp dahu-role-backup restore <file> [--full]
+wp ubac-role-backup list
+wp ubac-role-backup snapshot
+wp ubac-role-backup diff <file>
+wp ubac-role-backup restore <file> [--full]
 ```
 
 ## Requirements
