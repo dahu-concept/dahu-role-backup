@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       Dahu Role Backup
+ * Plugin Name:       Ubac Role Backup
  * Description:       A safety net for WordPress roles and capabilities: timestamped snapshots taken daily and whenever they change, a readable diff, and an additive restore from the admin screen or WP-CLI.
  * Version:           2.3.1
  * Author:            Hugo Vial-Jaime
  * Author URI:        https://dahu-concept.fr
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
- * Text Domain:       dahu-role-backup
+ * Text Domain:       ubac-role-backup
  * Domain Path:       /languages
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -110,7 +110,7 @@ add_filter(
 		$page = sprintf(
 			'<a href="%s">%s</a>',
 			esc_url( dahu_role_backup_url() ),
-			esc_html__( 'Snapshots', 'dahu-role-backup' )
+			esc_html__( 'Snapshots', 'ubac-role-backup' )
 		);
 		array_unshift( $links, $page );
 		return $links;
@@ -130,18 +130,18 @@ add_filter(
 		return array(
 			sprintf(
 				/* translators: %s: plugin version number. */
-				esc_html__( 'Version %s', 'dahu-role-backup' ),
+				esc_html__( 'Version %s', 'ubac-role-backup' ),
 				esc_html( $header['Version'] )
 			),
 			sprintf(
 				'<a href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( 'https://dahu-concept.fr' ),
-				esc_html__( 'By Hugo Vial-Jaime — Dahu-Concept', 'dahu-role-backup' )
+				esc_html__( 'By Hugo Vial-Jaime — Dahu-Concept', 'ubac-role-backup' )
 			),
 			sprintf(
 				'<a href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( 'https://dahu-concept.fr' ),
-				esc_html__( 'Plugin website', 'dahu-role-backup' )
+				esc_html__( 'Plugin website', 'ubac-role-backup' )
 			),
 		);
 	},
@@ -176,8 +176,8 @@ add_action(
 		Dahu_Welcome::register(
 			array(
 				'slug'       => 'dahu-role-backup',
-				'name'       => __( 'Role snapshots', 'dahu-role-backup' ),
-				'tagline'    => __( 'A copy of every role, taken before anything can lose one.', 'dahu-role-backup' ),
+				'name'       => __( 'Role snapshots', 'ubac-role-backup' ),
+				'tagline'    => __( 'A copy of every role, taken before anything can lose one.', 'ubac-role-backup' ),
 				'file'       => DAHU_ROLE_BACKUP_FILE,
 				'version'    => DAHU_ROLE_BACKUP_VERSION,
 				'textdomain' => 'dahu-role-backup',
@@ -199,18 +199,18 @@ add_action(
 				'tour'        => array(
 					array(
 						'selector' => '.dahu-ui-head__title',
-						'title'    => __( 'It is already running', 'dahu-role-backup' ),
-						'text'     => __( 'A first snapshot was taken when you activated the plugin. Nothing here needs setting up.', 'dahu-role-backup' ),
+						'title'    => __( 'It is already running', 'ubac-role-backup' ),
+						'text'     => __( 'A first snapshot was taken when you activated the plugin. Nothing here needs setting up.', 'ubac-role-backup' ),
 					),
 					array(
 						'selector' => '.dahu-rb-form button',
-						'title'    => __( 'Take one now', 'dahu-role-backup' ),
-						'text'     => __( 'Before you change roles by hand, or install something that might.', 'dahu-role-backup' ),
+						'title'    => __( 'Take one now', 'ubac-role-backup' ),
+						'text'     => __( 'Before you change roles by hand, or install something that might.', 'ubac-role-backup' ),
 					),
 					array(
 						'selector' => '.dahu-rb-table',
-						'title'    => __( 'Check it is running', 'dahu-role-backup' ),
-						'text'     => __( 'The last snapshot, the next daily run and the roles stored today, at a glance.', 'dahu-role-backup' ),
+						'title'    => __( 'Check it is running', 'ubac-role-backup' ),
+						'text'     => __( 'The last snapshot, the next daily run and the roles stored today, at a glance.', 'ubac-role-backup' ),
 					),
 				),
 				/*
@@ -219,24 +219,24 @@ add_action(
 				 * no text domain of its own.
 				 */
 				'strings'    => array(
-					'next'   => __( 'Next', 'dahu-role-backup' ),
-					'done'   => __( 'Done', 'dahu-role-backup' ),
-					'skip'   => __( 'Skip', 'dahu-role-backup' ),
-					'of'     => __( 'of', 'dahu-role-backup' ),
-					'denied' => __( 'You are not allowed to view this page.', 'dahu-role-backup' ),
+					'next'   => __( 'Next', 'ubac-role-backup' ),
+					'done'   => __( 'Done', 'ubac-role-backup' ),
+					'skip'   => __( 'Skip', 'ubac-role-backup' ),
+					'of'     => __( 'of', 'ubac-role-backup' ),
+					'denied' => __( 'You are not allowed to view this page.', 'ubac-role-backup' ),
 				),
 				'points'     => array(
 				array(
-					'title' => __( 'It watches', 'dahu-role-backup' ),
-					'text'  => __( 'Every write to the roles option is read against the database before it lands.', 'dahu-role-backup' ),
+					'title' => __( 'It watches', 'ubac-role-backup' ),
+					'text'  => __( 'Every write to the roles option is read against the database before it lands.', 'ubac-role-backup' ),
 				),
 				array(
-					'title' => __( 'It copies', 'dahu-role-backup' ),
-					'text'  => __( 'A snapshot is kept daily, and again whenever the roles change.', 'dahu-role-backup' ),
+					'title' => __( 'It copies', 'ubac-role-backup' ),
+					'text'  => __( 'A snapshot is kept daily, and again whenever the roles change.', 'ubac-role-backup' ),
 				),
 				array(
-					'title' => __( 'It restores', 'dahu-role-backup' ),
-					'text'  => __( 'Put back only what went missing, or everything, from the screen.', 'dahu-role-backup' ),
+					'title' => __( 'It restores', 'ubac-role-backup' ),
+					'text'  => __( 'Put back only what went missing, or everything, from the screen.', 'ubac-role-backup' ),
 				),
 				),
 			)

@@ -348,12 +348,12 @@ function dahu_role_backup_stale_notice() {
     $url = dahu_role_backup_url();
 
     if ( null === $age ) {
-        $state = esc_html__( 'no role snapshot has been recorded yet.', 'dahu-role-backup' );
+        $state = esc_html__( 'no role snapshot has been recorded yet.', 'ubac-role-backup' );
     } else {
         $state = esc_html(
             sprintf(
                 /* translators: %s: human-readable age of the last snapshot, for example "3 days". */
-                __( 'the last role snapshot is %s old. Roles are therefore no longer protected.', 'dahu-role-backup' ),
+                __( 'the last role snapshot is %s old. Roles are therefore no longer protected.', 'ubac-role-backup' ),
                 human_time_diff( time() - $age )
             )
         );
@@ -362,7 +362,7 @@ function dahu_role_backup_stale_notice() {
     $link = sprintf(
         '<a href="%1$s">%2$s</a>',
         esc_url( $url ),
-        esc_html__( 'Open the snapshots page', 'dahu-role-backup' )
+        esc_html__( 'Open the snapshots page', 'ubac-role-backup' )
     );
 
     printf(
@@ -370,7 +370,7 @@ function dahu_role_backup_stale_notice() {
         $state, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
         sprintf(
             /* translators: %s: link to the snapshots page, already marked up as an <a> element. */
-            __( '%s to take one now.', 'dahu-role-backup' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
+            __( '%s to take one now.', 'ubac-role-backup' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
             $link // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built just above through esc_html(), esc_html__() and esc_url(); escaping it again would show the markup as text.
         )
     );

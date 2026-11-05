@@ -1,4 +1,4 @@
-=== Dahu Role Backup ===
+=== Ubac Role Backup ===
 Contributors: dahuconcept
 Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.0

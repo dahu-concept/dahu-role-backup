@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2026-10-23 11:19+0000\n"
-"X-Domain: dahu-role-backup\n"
+"X-Domain: ubac-role-backup\n"
 
 #. translators: 1: number of snapshots on disk; 2: daily retention limit; 3: on-change retention limit. */
 #: includes/admin.php:299
@@ -51,15 +51,15 @@ msgstr ""
 msgid "(none)"
 msgstr ""
 
-#: dahu-role-backup.php:186 includes/admin.php:223
+#: ubac-role-backup.php:186 includes/admin.php:223
 msgid "A copy of every role, taken before anything can lose one."
 msgstr ""
 
-#: dahu-role-backup.php:209
+#: ubac-role-backup.php:209
 msgid "A first snapshot was taken when you activated the plugin. Nothing here needs setting up."
 msgstr ""
 
-#: dahu-role-backup.php:241
+#: ubac-role-backup.php:241
 msgid "A snapshot is kept daily, and again whenever the roles change."
 msgstr ""
 
@@ -80,11 +80,11 @@ msgstr ""
 msgid "Back to the list"
 msgstr ""
 
-#: dahu-role-backup.php:214
+#: ubac-role-backup.php:214
 msgid "Before you change roles by hand, or install something that might."
 msgstr ""
 
-#: dahu-role-backup.php:145
+#: ubac-role-backup.php:145
 msgid "By Hugo Vial-Jaime — Dahu-Concept"
 msgstr ""
 
@@ -92,7 +92,7 @@ msgstr ""
 msgid "Change"
 msgstr ""
 
-#: dahu-role-backup.php:218
+#: ubac-role-backup.php:218
 msgid "Check it is running"
 msgstr ""
 
@@ -123,7 +123,7 @@ msgstr ""
 msgid "Directory"
 msgstr ""
 
-#: dahu-role-backup.php:229
+#: ubac-role-backup.php:229
 msgid "Done"
 msgstr ""
 
@@ -132,7 +132,7 @@ msgstr ""
 msgid "Every role created since will be permanently deleted%s."
 msgstr ""
 
-#: dahu-role-backup.php:237
+#: ubac-role-backup.php:237
 msgid "Every write to the roles option is read against the database before it lands."
 msgstr ""
 
@@ -174,19 +174,19 @@ msgstr ""
 msgid "Invalid snapshot name."
 msgstr ""
 
-#: dahu-role-backup.php:240
+#: ubac-role-backup.php:240
 msgid "It copies"
 msgstr ""
 
-#: dahu-role-backup.php:208
+#: ubac-role-backup.php:208
 msgid "It is already running"
 msgstr ""
 
-#: dahu-role-backup.php:244
+#: ubac-role-backup.php:244
 msgid "It restores"
 msgstr ""
 
-#: dahu-role-backup.php:236
+#: ubac-role-backup.php:236
 msgid "It watches"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr ""
 msgid "Manual"
 msgstr ""
 
-#: dahu-role-backup.php:228
+#: ubac-role-backup.php:228
 msgid "Next"
 msgstr ""
 
@@ -247,11 +247,11 @@ msgstr ""
 msgid "Overwrites the whole set of roles with this snapshot."
 msgstr ""
 
-#: dahu-role-backup.php:150
+#: ubac-role-backup.php:150
 msgid "Plugin website"
 msgstr ""
 
-#: dahu-role-backup.php:245
+#: ubac-role-backup.php:245
 msgid "Put back only what went missing, or everything, from the screen."
 msgstr ""
 
@@ -271,7 +271,7 @@ msgstr ""
 msgid "Restore the missing roles (additive)"
 msgstr ""
 
-#: dahu-role-backup.php:185 includes/admin.php:25 includes/admin.php:26 includes/admin.php:222
+#: ubac-role-backup.php:185 includes/admin.php:25 includes/admin.php:26 includes/admin.php:222
 msgid "Role snapshots"
 msgstr ""
 
@@ -319,7 +319,7 @@ msgstr ""
 msgid "Show every snapshot"
 msgstr ""
 
-#: dahu-role-backup.php:230
+#: ubac-role-backup.php:230
 msgid "Skip"
 msgstr ""
 
@@ -354,7 +354,7 @@ msgstr ""
 msgid "Snapshot unreadable or corrupted: "
 msgstr ""
 
-#: dahu-role-backup.php:119 includes/admin.php:352
+#: ubac-role-backup.php:119 includes/admin.php:352
 msgid "Snapshots"
 msgstr ""
 
@@ -370,7 +370,7 @@ msgstr ""
 msgid "Take a snapshot now"
 msgstr ""
 
-#: dahu-role-backup.php:213
+#: ubac-role-backup.php:213
 msgid "Take one now"
 msgstr ""
 
@@ -383,7 +383,7 @@ msgstr ""
 msgid "Taken because a write was about to erase roles that were still stored: %s."
 msgstr ""
 
-#: dahu-role-backup.php:219
+#: ubac-role-backup.php:219
 msgid "The last snapshot, the next daily run and the roles stored today, at a glance."
 msgstr ""
 
@@ -396,7 +396,7 @@ msgid "This snapshot was triggered by the disappearance of:"
 msgstr ""
 
 #. translators: %s: plugin version number. */
-#: dahu-role-backup.php:139
+#: ubac-role-backup.php:139
 msgid "Version %s"
 msgstr ""
 
@@ -412,7 +412,7 @@ msgstr ""
 msgid "You are not allowed to access this page."
 msgstr ""
 
-#: dahu-role-backup.php:232
+#: ubac-role-backup.php:232
 msgid "You are not allowed to view this page."
 msgstr ""
 
@@ -436,7 +436,7 @@ msgstr ""
 msgid "not scheduled"
 msgstr ""
 
-#: dahu-role-backup.php:231
+#: ubac-role-backup.php:231
 msgid "of"
 msgstr ""
 

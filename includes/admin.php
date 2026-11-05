@@ -22,8 +22,8 @@ defined( 'ABSPATH' ) || exit;
  */
 function dahu_role_backup_register_menu() {
 	add_management_page(
-		__( 'Role snapshots', 'dahu-role-backup' ),
-		__( 'Role snapshots', 'dahu-role-backup' ),
+		__( 'Role snapshots', 'ubac-role-backup' ),
+		__( 'Role snapshots', 'ubac-role-backup' ),
 		'manage_options',
 		DAHU_ROLE_BACKUP_SLUG,
 		'dahu_role_backup_render_page'
@@ -82,7 +82,7 @@ add_action( 'admin_post_dahu_role_backup_snapshot', 'dahu_role_backup_handle_sna
  */
 function dahu_role_backup_handle_snapshot() {
     if ( ! current_user_can( 'manage_options' ) ) {
-        wp_die( esc_html__( 'You are not allowed to access this page.', 'dahu-role-backup' ) );
+        wp_die( esc_html__( 'You are not allowed to access this page.', 'ubac-role-backup' ) );
     }
 
     check_admin_referer( 'dahu_role_backup_snapshot' );
@@ -110,7 +110,7 @@ add_action( 'admin_post_dahu_role_backup_restore', 'dahu_role_backup_handle_rest
  */
 function dahu_role_backup_handle_restore() {
     if ( ! current_user_can( 'manage_options' ) ) {
-        wp_die( esc_html__( 'You are not allowed to access this page.', 'dahu-role-backup' ) );
+        wp_die( esc_html__( 'You are not allowed to access this page.', 'ubac-role-backup' ) );
     }
 
     $file = isset( $_POST['fichier'] ) ? basename( wp_unslash( $_POST['fichier'] ) ) : '';
@@ -125,7 +125,7 @@ function dahu_role_backup_handle_restore() {
     } else {
         $args = array(
             'dahu_msg'    => 'restaure',
-            'dahu_detail' => rawurlencode( empty( $result['restaures'] ) ? __( '(no role to restore)', 'dahu-role-backup' ) : implode( ', ', $result['restaures'] ) ),
+            'dahu_detail' => rawurlencode( empty( $result['restaures'] ) ? __( '(no role to restore)', 'ubac-role-backup' ) : implode( ', ', $result['restaures'] ) ),
             'dahu_mode'   => $result['mode'],
         );
     }
@@ -171,7 +171,7 @@ function dahu_role_backup_render_notices() {
         case 'instantane':
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%1$s <code>%2$s</code></p></div>',
-                esc_html__( 'Snapshot created:', 'dahu-role-backup' ),
+                esc_html__( 'Snapshot created:', 'ubac-role-backup' ),
                 esc_html( $detail )
             );
             break;
@@ -179,7 +179,7 @@ function dahu_role_backup_render_notices() {
         case 'identique':
             printf(
                 '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
-                esc_html__( 'No snapshot created: the roles are identical to the last one recorded.', 'dahu-role-backup' )
+                esc_html__( 'No snapshot created: the roles are identical to the last one recorded.', 'ubac-role-backup' )
             );
             break;
 
@@ -190,8 +190,8 @@ function dahu_role_backup_render_notices() {
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%1$s <strong>%2$s</strong></p></div>',
                 'full' === $mode
-                    ? esc_html__( 'Full restore done. Roles restored:', 'dahu-role-backup' )
-                    : esc_html__( 'Additive restore done. Roles restored:', 'dahu-role-backup' ),
+                    ? esc_html__( 'Full restore done. Roles restored:', 'ubac-role-backup' )
+                    : esc_html__( 'Additive restore done. Roles restored:', 'ubac-role-backup' ),
                 esc_html( $detail )
             );
             break;
@@ -199,7 +199,7 @@ function dahu_role_backup_render_notices() {
         case 'erreur':
             printf(
                 '<div class="notice notice-error"><p><strong>%1$s</strong> %2$s</p></div>',
-                esc_html__( 'Failure:', 'dahu-role-backup' ),
+                esc_html__( 'Failure:', 'ubac-role-backup' ),
                 esc_html( $detail )
             );
             break;
@@ -214,13 +214,13 @@ function dahu_role_backup_render_notices() {
  */
 function dahu_role_backup_render_page() {
     if ( ! current_user_can( 'manage_options' ) ) {
-        wp_die( esc_html__( 'You are not allowed to access this page.', 'dahu-role-backup' ) );
+        wp_die( esc_html__( 'You are not allowed to access this page.', 'ubac-role-backup' ) );
     }
 
     echo '<div class="wrap dahu-ui">';
     echo '<div class="dahu-ui-head">';
-    echo '<h1 class="dahu-ui-head__title">' . esc_html__( 'Role snapshots', 'dahu-role-backup' ) . '</h1>';
-    echo '<p class="dahu-ui-head__sub">' . esc_html__( 'A copy of every role, taken before anything can lose one.', 'dahu-role-backup' ) . '</p>';
+    echo '<h1 class="dahu-ui-head__title">' . esc_html__( 'Role snapshots', 'ubac-role-backup' ) . '</h1>';
+    echo '<p class="dahu-ui-head__sub">' . esc_html__( 'A copy of every role, taken before anything can lose one.', 'ubac-role-backup' ) . '</p>';
     echo '</div>';
 
     echo '<hr class="wp-header-end">';
@@ -250,7 +250,7 @@ function dahu_role_backup_render_overview() {
     $best    = dahu_role_backup_best_recent( $all );
     $next    = wp_next_scheduled( DAHU_ROLE_BACKUP_CRON );
 
-    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Status', 'dahu-role-backup' ) . '</h2></div>';
+    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Status', 'ubac-role-backup' ) . '</h2></div>';
     echo '<table class="widefat dahu-rb-table"><tbody>';
 
     /*
@@ -260,22 +260,22 @@ function dahu_role_backup_render_overview() {
      */
     printf(
         '<tr><th class="dahu-rb-col-label">%1$s</th><td><strong>%2$d</strong> — %3$s</td></tr>',
-        esc_html__( 'Roles currently in the database', 'dahu-role-backup' ),
+        esc_html__( 'Roles currently in the database', 'ubac-role-backup' ),
         count( $current ),
         empty( $current )
-            ? '<span class="dahu-rb-warning">' . esc_html__( 'the roles option could not be read', 'dahu-role-backup' ) . '</span>'
+            ? '<span class="dahu-rb-warning">' . esc_html__( 'the roles option could not be read', 'ubac-role-backup' ) . '</span>'
             : esc_html( implode( ', ', dahu_role_backup_slugs( $current ) ) )
     );
 
     printf(
         '<tr><th>%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Last snapshot', 'dahu-role-backup' ),
+        esc_html__( 'Last snapshot', 'ubac-role-backup' ),
         null === $age
-            ? '<span class="dahu-rb-warning">' . esc_html__( 'none', 'dahu-role-backup' ) . '</span>'
+            ? '<span class="dahu-rb-warning">' . esc_html__( 'none', 'ubac-role-backup' ) . '</span>'
             : esc_html(
                 sprintf(
                     /* translators: 1: human-readable age, for example "3 days"; 2: snapshot file name. */
-                    __( '%1$s ago (%2$s)', 'dahu-role-backup' ),
+                    __( '%1$s ago (%2$s)', 'ubac-role-backup' ),
                     human_time_diff( time() - $age ),
                     $all[0]['file']
                 )
@@ -284,19 +284,19 @@ function dahu_role_backup_render_overview() {
 
     printf(
         '<tr><th>%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Next daily snapshot', 'dahu-role-backup' ),
+        esc_html__( 'Next daily snapshot', 'ubac-role-backup' ),
         $next
             ? esc_html( wp_date( dahu_role_backup_datetime_format(), $next ) )
-            : '<span class="dahu-rb-warning">' . esc_html__( 'not scheduled', 'dahu-role-backup' ) . '</span>'
+            : '<span class="dahu-rb-warning">' . esc_html__( 'not scheduled', 'ubac-role-backup' ) . '</span>'
     );
 
     printf(
         '<tr><th>%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Snapshots kept', 'dahu-role-backup' ),
+        esc_html__( 'Snapshots kept', 'ubac-role-backup' ),
         esc_html(
             sprintf(
                 /* translators: 1: number of snapshots on disk; 2: daily retention limit; 3: on-change retention limit. */
-                __( '%1$d (limit: %2$d daily + %3$d on change)', 'dahu-role-backup' ),
+                __( '%1$d (limit: %2$d daily + %3$d on change)', 'ubac-role-backup' ),
                 count( $all ),
                 DAHU_ROLE_BACKUP_KEEP_DAILY,
                 DAHU_ROLE_BACKUP_KEEP_CHANGE
@@ -306,12 +306,12 @@ function dahu_role_backup_render_overview() {
 
     printf(
         '<tr><th>%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Snapshot protected from pruning', 'dahu-role-backup' ),
+        esc_html__( 'Snapshot protected from pruning', 'ubac-role-backup' ),
         $best
             ? esc_html(
                 sprintf(
                     /* translators: 1: snapshot file name; 2: number of roles it holds. */
-                    _n( '%1$s (%2$d role)', '%1$s (%2$d roles)', $best['count'], 'dahu-role-backup' ),
+                    _n( '%1$s (%2$d role)', '%1$s (%2$d roles)', $best['count'], 'ubac-role-backup' ),
                     $best['file'],
                     $best['count']
                 )
@@ -329,14 +329,14 @@ function dahu_role_backup_render_overview() {
     if ( '' !== $why ) {
         printf(
             '<tr><th>%1$s</th><td><strong>%2$s</strong></td></tr>',
-            esc_html__( 'Why it was taken', 'dahu-role-backup' ),
+            esc_html__( 'Why it was taken', 'ubac-role-backup' ),
             esc_html( $why )
         );
     }
 
     printf(
         '<tr><th>%1$s</th><td><code>%2$s</code></td></tr>',
-        esc_html__( 'Directory', 'dahu-role-backup' ),
+        esc_html__( 'Directory', 'ubac-role-backup' ),
         esc_html( dahu_role_backup_dir() )
     );
 
@@ -346,13 +346,13 @@ function dahu_role_backup_render_overview() {
         '<div class="dahu-ui-card"><form method="post" action="%1$s" class="dahu-rb-form">%2$s<input type="hidden" name="action" value="dahu_role_backup_snapshot"><button type="submit" class="dahu-ui-btn dahu-ui-btn--go">%3$s</button></form></div>',
         esc_url( admin_url( 'admin-post.php' ) ),
         wp_nonce_field( 'dahu_role_backup_snapshot', '_wpnonce', true, false ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
-        esc_html__( 'Take a snapshot now', 'dahu-role-backup' )
+        esc_html__( 'Take a snapshot now', 'ubac-role-backup' )
     );
 
-    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Snapshots', 'dahu-role-backup' ) . '</h2></div>';
+    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'Snapshots', 'ubac-role-backup' ) . '</h2></div>';
 
     if ( empty( $all ) ) {
-        echo '<p class="dahu-ui-hint">' . esc_html__( 'No snapshot yet; the first one appears here as soon as you take one.', 'dahu-role-backup' ) . '</p></div>';
+        echo '<p class="dahu-ui-hint">' . esc_html__( 'No snapshot yet; the first one appears here as soon as you take one.', 'ubac-role-backup' ) . '</p></div>';
         return;
     }
 
@@ -370,17 +370,17 @@ function dahu_role_backup_render_overview() {
     echo '<table class="widefat striped dahu-rb-snapshots"><thead><tr>';
     printf(
         '<th>%1$s</th><th>%2$s</th><th class="dahu-rb-snapshots__num">%3$s</th><th>%4$s</th><th></th>',
-        esc_html__( 'Date', 'dahu-role-backup' ),
-        esc_html__( 'Kind', 'dahu-role-backup' ),
-        esc_html__( 'Roles', 'dahu-role-backup' ),
-        esc_html__( 'File', 'dahu-role-backup' )
+        esc_html__( 'Date', 'ubac-role-backup' ),
+        esc_html__( 'Kind', 'ubac-role-backup' ),
+        esc_html__( 'Roles', 'ubac-role-backup' ),
+        esc_html__( 'File', 'ubac-role-backup' )
     );
     echo '</tr></thead><tbody>';
 
     $labels = array(
-        'daily'  => __( 'Daily', 'dahu-role-backup' ),
-        'change' => __( 'Change', 'dahu-role-backup' ),
-        'manual' => __( 'Manual', 'dahu-role-backup' ),
+        'daily'  => __( 'Daily', 'ubac-role-backup' ),
+        'change' => __( 'Change', 'ubac-role-backup' ),
+        'manual' => __( 'Manual', 'ubac-role-backup' ),
     );
 
     $any_protected = false;
@@ -420,7 +420,7 @@ function dahu_role_backup_render_overview() {
             esc_html( $meta['file'] ),
             esc_html( size_format( (int) $meta['size'] ) ),
             esc_url( $url ),
-            esc_html__( 'Compare / restore', 'dahu-role-backup' )
+            esc_html__( 'Compare / restore', 'ubac-role-backup' )
         );
     }
 
@@ -432,7 +432,7 @@ function dahu_role_backup_render_overview() {
     if ( $any_protected ) {
         printf(
             '<p class="dahu-rb-legend"><span class="dahu-rb-protected">&#9733;</span> %s</p>',
-            esc_html__( 'Kept whatever the retention limit says: it is the most complete snapshot, and the one a restore should usually start from.', 'dahu-role-backup' )
+            esc_html__( 'Kept whatever the retention limit says: it is the most complete snapshot, and the one a restore should usually start from.', 'ubac-role-backup' )
         );
     }
 
@@ -442,12 +442,12 @@ function dahu_role_backup_render_overview() {
             esc_html(
                 sprintf(
                     /* translators: %s: how many older snapshots are not shown. */
-                    _n( '%s older snapshot is not shown.', '%s older snapshots are not shown.', $total - count( $rows ), 'dahu-role-backup' ),
+                    _n( '%s older snapshot is not shown.', '%s older snapshots are not shown.', $total - count( $rows ), 'ubac-role-backup' ),
                     number_format_i18n( $total - count( $rows ) )
                 )
             ),
             esc_url( add_query_arg( 'all', '1', dahu_role_backup_url() ) ),
-            esc_html__( 'Show every snapshot', 'dahu-role-backup' )
+            esc_html__( 'Show every snapshot', 'ubac-role-backup' )
         );
     }
 
@@ -474,7 +474,7 @@ function dahu_role_backup_render_preview( $filename ) {
         printf(
             '<p><a href="%1$s">&larr; %2$s</a></p>',
             esc_url( $back ),
-            esc_html__( 'Back', 'dahu-role-backup' )
+            esc_html__( 'Back', 'ubac-role-backup' )
         );
         return;
     }
@@ -485,11 +485,11 @@ function dahu_role_backup_render_preview( $filename ) {
     printf(
         '<p><a href="%1$s">&larr; %2$s</a></p>',
         esc_url( $back ),
-        esc_html__( 'Back to the list', 'dahu-role-backup' )
+        esc_html__( 'Back to the list', 'ubac-role-backup' )
     );
     printf(
         '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">%1$s <code>%2$s</code></h2></div>',
-        esc_html__( 'Snapshot', 'dahu-role-backup' ),
+        esc_html__( 'Snapshot', 'ubac-role-backup' ),
         esc_html( $snapshot['file'] )
     );
 
@@ -504,12 +504,12 @@ function dahu_role_backup_render_preview( $filename ) {
         esc_html(
             sprintf(
                 /* translators: 1: date the snapshot was created; 2: number of roles held by the snapshot. */
-                _n( 'Created on %1$s — %2$d role', 'Created on %1$s — %2$d roles', count( $snapshot['roles'] ), 'dahu-role-backup' ),
+                _n( 'Created on %1$s — %2$d role', 'Created on %1$s — %2$d roles', count( $snapshot['roles'] ), 'ubac-role-backup' ),
                 $created ? wp_date( dahu_role_backup_datetime_format(), $created ) : '?',
                 count( $snapshot['roles'] )
             )
         ),
-        esc_html__( 'origin:', 'dahu-role-backup' ),
+        esc_html__( 'origin:', 'ubac-role-backup' ),
         esc_html( isset( $snapshot['table_prefix'] ) ? $snapshot['table_prefix'] : '?' )
     );
 
@@ -518,7 +518,7 @@ function dahu_role_backup_render_preview( $filename ) {
     if ( ! empty( $snapshot['roles_perdus'] ) ) {
         printf(
             '<div class="notice notice-warning inline"><p>%1$s <strong>%2$s</strong></p></div>',
-            esc_html__( 'This snapshot was triggered by the disappearance of:', 'dahu-role-backup' ),
+            esc_html__( 'This snapshot was triggered by the disappearance of:', 'ubac-role-backup' ),
             esc_html( implode( ', ', (array) $snapshot['roles_perdus'] ) )
         );
     }
@@ -528,28 +528,28 @@ function dahu_role_backup_render_preview( $filename ) {
         return;
     }
 
-    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'What the restore would change', 'dahu-role-backup' ) . '</h2></div>';
+    echo '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">' . esc_html__( 'What the restore would change', 'ubac-role-backup' ) . '</h2></div>';
     echo '<table class="widefat dahu-rb-table"><tbody>';
 
     printf(
         '<tr><th class="dahu-rb-col-label--wide">%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Roles to recreate (additive mode)', 'dahu-role-backup' ),
+        esc_html__( 'Roles to recreate (additive mode)', 'ubac-role-backup' ),
         empty( $diff['manquants'] )
-            ? '<em>' . esc_html__( 'none — nothing to restore', 'dahu-role-backup' ) . '</em>'
+            ? '<em>' . esc_html__( 'none — nothing to restore', 'ubac-role-backup' ) . '</em>'
             : '<strong>' . esc_html( implode( ', ', $diff['manquants'] ) ) . '</strong>'
     );
 
     printf(
         '<tr><th>%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Roles missing from this snapshot', 'dahu-role-backup' ),
+        esc_html__( 'Roles missing from this snapshot', 'ubac-role-backup' ),
         empty( $diff['nouveaux'] )
-            ? '<em>' . esc_html__( 'none', 'dahu-role-backup' ) . '</em>'
-            : esc_html( implode( ', ', $diff['nouveaux'] ) ) . ' <span class="dahu-rb-warning">' . esc_html__( '(kept in additive mode, DELETED in full mode)', 'dahu-role-backup' ) . '</span>'
+            ? '<em>' . esc_html__( 'none', 'ubac-role-backup' ) . '</em>'
+            : esc_html( implode( ', ', $diff['nouveaux'] ) ) . ' <span class="dahu-rb-warning">' . esc_html__( '(kept in additive mode, DELETED in full mode)', 'ubac-role-backup' ) . '</span>'
     );
 
     printf(
         '<tr><th>%1$s</th><td>%2$s</td></tr>',
-        esc_html__( 'Roles already present', 'dahu-role-backup' ),
+        esc_html__( 'Roles already present', 'ubac-role-backup' ),
         esc_html( implode( ', ', $diff['communs'] ) )
     );
 
@@ -573,7 +573,7 @@ function dahu_role_backup_render_preview( $filename ) {
         $nonce, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         $file, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         empty( $diff['manquants'] ) ? ' disabled' : '',
-        esc_html__( 'Restore the missing roles (additive)', 'dahu-role-backup' )
+        esc_html__( 'Restore the missing roles (additive)', 'ubac-role-backup' )
     );
 
     $lost = empty( $diff['nouveaux'] ) ? '' : ': ' . implode( ', ', $diff['nouveaux'] );
@@ -582,7 +582,7 @@ function dahu_role_backup_render_preview( $filename ) {
     // string literal inside an HTML attribute. A translation containing an
     // apostrophe — which French, Italian and many others will — would close
     // the literal early and break the button without it.
-    $confirm = esc_js( __( 'Full replacement of the roles. This action cannot be undone without a restore. Confirm?', 'dahu-role-backup' ) );
+    $confirm = esc_js( __( 'Full replacement of the roles. This action cannot be undone without a restore. Confirm?', 'ubac-role-backup' ) );
 
     printf(
         '<div class="dahu-ui-card"><div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title">%4$s</h2></div><form method="post" action="%1$s" class="dahu-rb-form--danger">%2$s
@@ -596,17 +596,17 @@ function dahu_role_backup_render_preview( $filename ) {
         $action, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         $nonce, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
         $file, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
-        esc_html__( 'Full replacement', 'dahu-role-backup' ),
-        esc_html__( 'Overwrites the whole set of roles with this snapshot.', 'dahu-role-backup' ),
+        esc_html__( 'Full replacement', 'ubac-role-backup' ),
+        esc_html__( 'Overwrites the whole set of roles with this snapshot.', 'ubac-role-backup' ),
         esc_html(
             sprintf(
                 /* translators: %s: empty, or a colon followed by the comma-separated roles that would be deleted. */
-                __( 'Every role created since will be permanently deleted%s.', 'dahu-role-backup' ),
+                __( 'Every role created since will be permanently deleted%s.', 'ubac-role-backup' ),
                 $lost
             )
         ),
-        esc_html__( 'I understand and I confirm.', 'dahu-role-backup' ),
+        esc_html__( 'I understand and I confirm.', 'ubac-role-backup' ),
         $confirm, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where it is built, just above: esc_url(), esc_attr(), esc_js(), or markup returned by wp_nonce_field( ..., false ); %d for the count.
-        esc_html__( 'Replace in full', 'dahu-role-backup' )
+        esc_html__( 'Replace in full', 'ubac-role-backup' )
     );
 }

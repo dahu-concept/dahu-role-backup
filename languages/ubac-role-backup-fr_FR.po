@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: dahu-role-backup\n"
+"Project-Id-Version: ubac-role-backup\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -50,15 +50,15 @@ msgstr "(aucun rôle à restaurer)"
 msgid "(none)"
 msgstr "(aucun)"
 
-#: dahu-role-backup.php:186 includes/admin.php:223
+#: ubac-role-backup.php:186 includes/admin.php:223
 msgid "A copy of every role, taken before anything can lose one."
 msgstr "Une copie de chaque rôle, prise avant que quoi que ce soit puisse en perdre un."
 
-#: dahu-role-backup.php:209
+#: ubac-role-backup.php:209
 msgid "A first snapshot was taken when you activated the plugin. Nothing here needs setting up."
 msgstr "Un premier instantané a été pris à l’activation. Il n’y a rien à régler ici."
 
-#: dahu-role-backup.php:241
+#: ubac-role-backup.php:241
 msgid "A snapshot is kept daily, and again whenever the roles change."
 msgstr "Un instantané par jour, et un autre dès que les rôles changent."
 
@@ -79,11 +79,11 @@ msgstr "Retour"
 msgid "Back to the list"
 msgstr "Retour à la liste"
 
-#: dahu-role-backup.php:214
+#: ubac-role-backup.php:214
 msgid "Before you change roles by hand, or install something that might."
 msgstr "Avant de modifier des rôles à la main, ou d’installer quelque chose qui le ferait."
 
-#: dahu-role-backup.php:145
+#: ubac-role-backup.php:145
 msgid "By Hugo Vial-Jaime — Dahu-Concept"
 msgstr "Par Hugo Vial-Jaime — Dahu-Concept"
 
@@ -91,7 +91,7 @@ msgstr "Par Hugo Vial-Jaime — Dahu-Concept"
 msgid "Change"
 msgstr "Changement"
 
-#: dahu-role-backup.php:218
+#: ubac-role-backup.php:218
 msgid "Check it is running"
 msgstr "Vérifiez que ça tourne"
 
@@ -122,7 +122,7 @@ msgstr "Date"
 msgid "Directory"
 msgstr "Répertoire"
 
-#: dahu-role-backup.php:229
+#: ubac-role-backup.php:229
 msgid "Done"
 msgstr "Terminé"
 
@@ -131,7 +131,7 @@ msgstr "Terminé"
 msgid "Every role created since will be permanently deleted%s."
 msgstr "Tout rôle créé depuis sera définitivement supprimé%s."
 
-#: dahu-role-backup.php:237
+#: ubac-role-backup.php:237
 msgid "Every write to the roles option is read against the database before it lands."
 msgstr "Chaque écriture des rôles est comparée à la base avant d’atterrir."
 
@@ -173,19 +173,19 @@ msgstr "Je comprends et je confirme."
 msgid "Invalid snapshot name."
 msgstr "Nom d’instantané invalide."
 
-#: dahu-role-backup.php:240
+#: ubac-role-backup.php:240
 msgid "It copies"
 msgstr "Elle copie"
 
-#: dahu-role-backup.php:208
+#: ubac-role-backup.php:208
 msgid "It is already running"
 msgstr "Elle tourne déjà"
 
-#: dahu-role-backup.php:244
+#: ubac-role-backup.php:244
 msgid "It restores"
 msgstr "Elle restaure"
 
-#: dahu-role-backup.php:236
+#: ubac-role-backup.php:236
 msgid "It watches"
 msgstr "Elle surveille"
 
@@ -205,7 +205,7 @@ msgstr "Dernier instantané"
 msgid "Manual"
 msgstr "Manuel"
 
-#: dahu-role-backup.php:228
+#: ubac-role-backup.php:228
 msgid "Next"
 msgstr "Suivant"
 
@@ -246,11 +246,11 @@ msgstr "Ouvrir la page des instantanés"
 msgid "Overwrites the whole set of roles with this snapshot."
 msgstr "Remplace l’ensemble des rôles par cet instantané."
 
-#: dahu-role-backup.php:150
+#: ubac-role-backup.php:150
 msgid "Plugin website"
 msgstr "Site de l’extension"
 
-#: dahu-role-backup.php:245
+#: ubac-role-backup.php:245
 msgid "Put back only what went missing, or everything, from the screen."
 msgstr "Remettre seulement ce qui manque, ou tout, depuis l’écran."
 
@@ -270,7 +270,7 @@ msgstr "Remplacer intégralement"
 msgid "Restore the missing roles (additive)"
 msgstr "Restaurer les rôles manquants (additif)"
 
-#: dahu-role-backup.php:185 includes/admin.php:25 includes/admin.php:26 includes/admin.php:222
+#: ubac-role-backup.php:185 includes/admin.php:25 includes/admin.php:26 includes/admin.php:222
 msgid "Role snapshots"
 msgstr "Instantanés des rôles"
 
@@ -318,7 +318,7 @@ msgstr "Rôles à recréer (mode additif)"
 msgid "Show every snapshot"
 msgstr "Afficher tous les instantanés"
 
-#: dahu-role-backup.php:230
+#: ubac-role-backup.php:230
 msgid "Skip"
 msgstr "Passer"
 
@@ -353,7 +353,7 @@ msgstr "Instantané protégé de la purge"
 msgid "Snapshot unreadable or corrupted: "
 msgstr "Instantané illisible ou corrompu : "
 
-#: dahu-role-backup.php:119 includes/admin.php:352
+#: ubac-role-backup.php:119 includes/admin.php:352
 msgid "Snapshots"
 msgstr "Instantanés"
 
@@ -369,7 +369,7 @@ msgstr "État"
 msgid "Take a snapshot now"
 msgstr "Prendre un instantané maintenant"
 
-#: dahu-role-backup.php:213
+#: ubac-role-backup.php:213
 msgid "Take one now"
 msgstr "En prendre un maintenant"
 
@@ -382,7 +382,7 @@ msgstr "Pris parce qu’une écriture allait effacer des rôles encore enregistr
 msgid "Taken because a write was about to erase roles that were still stored: %s."
 msgstr "Pris parce qu’une écriture allait effacer des rôles encore enregistrés : %s."
 
-#: dahu-role-backup.php:219
+#: ubac-role-backup.php:219
 msgid "The last snapshot, the next daily run and the roles stored today, at a glance."
 msgstr "Le dernier instantané, la prochaine passe quotidienne et les rôles conservés aujourd'hui, d'un coup d'œil."
 
@@ -395,7 +395,7 @@ msgid "This snapshot was triggered by the disappearance of:"
 msgstr "Cet instantané a été déclenché par la disparition de :"
 
 #. translators: %s: plugin version number. */
-#: dahu-role-backup.php:139
+#: ubac-role-backup.php:139
 msgid "Version %s"
 msgstr "Version %s"
 
@@ -411,7 +411,7 @@ msgstr "Pourquoi il a été pris"
 msgid "You are not allowed to access this page."
 msgstr "Vous n’avez pas l’autorisation d’accéder à cette page."
 
-#: dahu-role-backup.php:232
+#: ubac-role-backup.php:232
 msgid "You are not allowed to view this page."
 msgstr "Vous n’avez pas l’autorisation de voir cette page."
 
@@ -435,7 +435,7 @@ msgstr "aucun — rien à restaurer"
 msgid "not scheduled"
 msgstr "non planifié"
 
-#: dahu-role-backup.php:231
+#: ubac-role-backup.php:231
 msgid "of"
 msgstr "sur"
 
