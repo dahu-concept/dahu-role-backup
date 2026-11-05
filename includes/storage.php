@@ -213,11 +213,11 @@ function ubac_role_backup_log( $message ) {
 
     // Falling back to the PHP log is better than losing the line entirely.
     //
-    // La raison tient sur LA LIGNE de l'annotation, et pas en dessous : PHPCS
-    // n'honore un phpcs:ignore que s'il precede immediatement le code. La
-    // justification etant coupee sur deux lignes, la ligne qui precedait
-    // vraiment le code etait la suite du commentaire, l'annotation ne
-    // supprimait rien, et l'avertissement error_log remontait au relecteur.
+    // The reason sits ON THE ANNOTATION'S OWN LINE, not under it: PHPCS
+    // honours a phpcs:ignore only when it immediately precedes the code.
+    // With the justification wrapped onto a second line, the line really
+    // preceding the call was the comment's continuation, the annotation
+    // suppressed nothing, and the error_log warning reached the reviewer.
     // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- writes to the plugin's own protected log file, and falls back to the PHP log rather than losing the line; both paths deliberate.
     if ( ! @error_log( $line, 3, $file ) ) {
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- See above.
