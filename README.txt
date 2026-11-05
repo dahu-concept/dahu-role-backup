@@ -1,5 +1,5 @@
 === Ubac Role Backup ===
-Contributors: ubacconcept
+Contributors: dahuconcept
 Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.0
 Tested up to: 7.1
