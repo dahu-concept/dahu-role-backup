@@ -212,8 +212,13 @@ function ubac_role_backup_log( $message ) {
     $line = '[' . gmdate( 'Y-m-d H:i:s' ) . ' UTC] ' . $message . "\n";
 
     // Falling back to the PHP log is better than losing the line entirely.
-    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Writes to the plugin's own protected log file; falls back to
-    // the PHP log rather than losing the line. Both paths deliberate.
+    //
+    // La raison tient sur LA LIGNE de l'annotation, et pas en dessous : PHPCS
+    // n'honore un phpcs:ignore que s'il precede immediatement le code. La
+    // justification etant coupee sur deux lignes, la ligne qui precedait
+    // vraiment le code etait la suite du commentaire, l'annotation ne
+    // supprimait rien, et l'avertissement error_log remontait au relecteur.
+    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- writes to the plugin's own protected log file, and falls back to the PHP log rather than losing the line; both paths deliberate.
     if ( ! @error_log( $line, 3, $file ) ) {
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- See above.
         error_log( '[Ubac Role Backup] ' . $message );
