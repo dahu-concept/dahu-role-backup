@@ -4,7 +4,7 @@ Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -102,6 +102,9 @@ roles option is actually written, which on a normal site is rare.
 
 == Changelog ==
 
+= 2.3.2 =
+* Changed: WordPress 6.2 is now the floor. Three extensions of the family need it for prepare()'s %i identifier placeholder, and the family states one floor rather than two because the welcome screen and the shared admin stylesheet are copied byte for byte across it.
+
 = 2.3.1 =
 * The snapshot list now says what will appear there once a snapshot is taken.
 * The status line no longer ends on a dash when the roles option cannot be read; it says that it could not be read.
@@ -137,6 +140,9 @@ roles option is actually written, which on a normal site is rare.
 * Own screen under Tools, instead of a tab in another plugin's settings.
 
 == Upgrade Notice ==
+
+= 2.3.2 =
+WordPress 6.2 is now the floor, in step with the rest of the family. Nothing else changes.
 
 = 2.1.0 =
 Catches roles erased by a stale copy of the roles option, which nothing else

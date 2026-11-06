@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Ubac Role Backup
  * Description:       A safety net for WordPress roles and capabilities: timestamped snapshots taken daily and whenever they change, a readable diff, and an additive restore from the admin screen or WP-CLI.
- * Version:           2.3.1
+ * Version:           2.3.2
  * Author:            Hugo Vial-Jaime
  * Author URI:        https://dahu-concept.fr
  * License:           MIT
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'UBAC_ROLE_BACKUP_VERSION', '2.3.1' );
+define( 'UBAC_ROLE_BACKUP_VERSION', '2.3.2' );
 define( 'UBAC_ROLE_BACKUP_FILE', __FILE__ );
 define( 'UBAC_ROLE_BACKUP_PATH', plugin_dir_path( __FILE__ ) );
 define( 'UBAC_ROLE_BACKUP_URL', plugin_dir_url( __FILE__ ) );
