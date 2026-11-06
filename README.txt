@@ -1,7 +1,7 @@
 === Ubac Role Backup ===
 Contributors: dahuconcept
 Tags: roles, capabilities, backup, restore, recovery
-Requires at least: 6.0
+Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 2.3.1
