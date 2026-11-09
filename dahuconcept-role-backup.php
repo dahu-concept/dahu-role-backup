@@ -166,7 +166,7 @@ require_once UBAC_ROLE_BACKUP_PATH . 'includes/ubac-welcome.php';
 register_activation_hook(
 	__FILE__,
 	static function () {
-		Ubac_Welcome::mark_activated( 'ubac-role-backup' );
+		Ubac_Welcome::mark_activated( 'dahuconcept-role-backup' );
 	}
 );
 
@@ -175,12 +175,12 @@ add_action(
 	static function () {
 		Ubac_Welcome::register(
 			array(
-				'slug'       => 'ubac-role-backup',
+				'slug'       => 'dahuconcept-role-backup',
 				'name'       => __( 'Role snapshots', 'dahuconcept-role-backup' ),
 				'tagline'    => __( 'A copy of every role, taken before anything can lose one.', 'dahuconcept-role-backup' ),
 				'file'       => UBAC_ROLE_BACKUP_FILE,
 				'version'    => UBAC_ROLE_BACKUP_VERSION,
-				'textdomain' => 'ubac-role-backup',
+				'textdomain' => 'dahuconcept-role-backup',
 				'mark'       => array(
 					'view'  => '0 0 112 112',
 					'paths' => array(
