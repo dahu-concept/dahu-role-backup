@@ -1,4 +1,4 @@
-=== Ubac Role Backup ===
+=== DahuConcept Role Backup ===
 Contributors: dahuconcept
 Tags: roles, capabilities, backup, restore, recovery
 Requires at least: 6.2
@@ -17,7 +17,7 @@ writing to it carelessly, one migration, one badly timed update, and a role
 that half the site depends on is simply gone — with nothing to put back,
 because nobody ever thought to copy it.
 
-Ubac Role Backup copies it. Every day, and again whenever the option changes.
+DahuConcept Role Backup copies it. Every day, and again whenever the option changes.
 When a role disappears you open the list, compare, and put it back.
 
 = How it works =

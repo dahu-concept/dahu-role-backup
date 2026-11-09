@@ -154,11 +154,11 @@ function ubac_role_backup_list( $type = null ) {
  */
 function ubac_role_backup_write( $type, $roles, $extra = array() ) {
     if ( ! is_array( $roles ) || empty( $roles ) ) {
-        return new WP_Error( 'ubac_role_backup_vide', __( 'Refusing to write an empty or invalid snapshot.', 'ubac-role-backup' ) );
+        return new WP_Error( 'ubac_role_backup_vide', __( 'Refusing to write an empty or invalid snapshot.', 'dahuconcept-role-backup' ) );
     }
 
     if ( ! ubac_role_backup_ensure_dir() ) {
-        return new WP_Error( 'ubac_role_backup_dir', __( 'Snapshot directory missing or not writable: ', 'ubac-role-backup' ) . ubac_role_backup_dir() );
+        return new WP_Error( 'ubac_role_backup_dir', __( 'Snapshot directory missing or not writable: ', 'dahuconcept-role-backup' ) . ubac_role_backup_dir() );
     }
 
     $checksum = ubac_role_backup_checksum( $roles );
@@ -172,7 +172,7 @@ function ubac_role_backup_write( $type, $roles, $extra = array() ) {
         return array(
             'skipped' => true,
             'file'    => $existing[0]['file'],
-            'reason'  => __( 'identical to the last snapshot', 'ubac-role-backup' ),
+            'reason'  => __( 'identical to the last snapshot', 'dahuconcept-role-backup' ),
         );
     }
 
@@ -202,7 +202,7 @@ function ubac_role_backup_write( $type, $roles, $extra = array() ) {
     $json = wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
     if ( false === $json || false === @file_put_contents( $path, $json ) ) {
-        return new WP_Error( 'ubac_role_backup_ecriture', __( 'Could not write ', 'ubac-role-backup' ) . $path );
+        return new WP_Error( 'ubac_role_backup_ecriture', __( 'Could not write ', 'dahuconcept-role-backup' ) . $path );
     }
 
     update_option( 'ubac_role_backup_last', array(
@@ -269,19 +269,19 @@ function ubac_role_backup_load( $filename ) {
     $filename = basename( (string) $filename );
 
     if ( ! ubac_role_backup_parse_filename( $filename ) ) {
-        return new WP_Error( 'ubac_role_backup_nom', __( 'Invalid snapshot name.', 'ubac-role-backup' ) );
+        return new WP_Error( 'ubac_role_backup_nom', __( 'Invalid snapshot name.', 'dahuconcept-role-backup' ) );
     }
 
     $path = ubac_role_backup_dir() . '/' . $filename;
 
     if ( ! is_readable( $path ) ) {
-        return new WP_Error( 'ubac_role_backup_absent', __( 'Snapshot not found: ', 'ubac-role-backup' ) . $filename );
+        return new WP_Error( 'ubac_role_backup_absent', __( 'Snapshot not found: ', 'dahuconcept-role-backup' ) . $filename );
     }
 
     $data = json_decode( (string) file_get_contents( $path ), true );
 
     if ( ! is_array( $data ) || empty( $data['roles'] ) || ! is_array( $data['roles'] ) ) {
-        return new WP_Error( 'ubac_role_backup_corrompu', __( 'Snapshot unreadable or corrupted: ', 'ubac-role-backup' ) . $filename );
+        return new WP_Error( 'ubac_role_backup_corrompu', __( 'Snapshot unreadable or corrupted: ', 'dahuconcept-role-backup' ) . $filename );
     }
 
     $data['file'] = $filename;
@@ -316,7 +316,7 @@ function ubac_role_backup_check_origin( $snapshot ) {
             'ubac_role_backup_origine',
             sprintf(
                 /* translators: 1: table prefix stored in the snapshot, 2: option name stored in the snapshot, 3: table prefix of this installation, 4: option name of this installation. */
-                __( 'This snapshot comes from ANOTHER installation and cannot be restored here. Snapshot: prefix "%1$s", option "%2$s". This installation: prefix "%3$s", option "%4$s".', 'ubac-role-backup' ),
+                __( 'This snapshot comes from ANOTHER installation and cannot be restored here. Snapshot: prefix "%1$s", option "%2$s". This installation: prefix "%3$s", option "%4$s".', 'dahuconcept-role-backup' ),
                 $found_prefix,
                 $found_option,
                 $expected_prefix,
@@ -378,12 +378,12 @@ function ubac_role_backup_rescue_reason( $file ) {
     $lost = isset( $snapshot['roles_perdus'] ) ? (array) $snapshot['roles_perdus'] : array();
 
     if ( ! $lost ) {
-        return __( 'Taken because a write was about to erase roles that were still stored.', 'ubac-role-backup' );
+        return __( 'Taken because a write was about to erase roles that were still stored.', 'dahuconcept-role-backup' );
     }
 
     return sprintf(
         /* translators: %s: comma-separated list of role slugs. */
-        __( 'Taken because a write was about to erase roles that were still stored: %s.', 'ubac-role-backup' ),
+        __( 'Taken because a write was about to erase roles that were still stored: %s.', 'dahuconcept-role-backup' ),
         implode( ', ', array_map( 'sanitize_key', $lost ) )
     );
 }

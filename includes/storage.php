@@ -221,7 +221,7 @@ function ubac_role_backup_log( $message ) {
     // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- writes to the plugin's own protected log file, and falls back to the PHP log rather than losing the line; both paths deliberate.
     if ( ! @error_log( $line, 3, $file ) ) {
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- See above.
-        error_log( '[Ubac Role Backup] ' . $message );
+        error_log( '[DahuConcept Role Backup] ' . $message );
     }
 }
 

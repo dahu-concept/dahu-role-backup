@@ -38,7 +38,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
             $all = ubac_role_backup_list();
 
             if ( empty( $all ) ) {
-                WP_CLI::warning( __( 'No snapshot.', 'ubac-role-backup' ) );
+                WP_CLI::warning( __( 'No snapshot.', 'dahuconcept-role-backup' ) );
                 return;
             }
 
@@ -79,7 +79,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
             if ( ! empty( $result['skipped'] ) ) {
                 WP_CLI::success( sprintf(
                     /* translators: %s: file name of the identical snapshot already on disk. */
-                    __( 'No change since %s: nothing to write.', 'ubac-role-backup' ),
+                    __( 'No change since %s: nothing to write.', 'dahuconcept-role-backup' ),
                     $result['file']
                 ) );
                 return;
@@ -87,7 +87,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
             WP_CLI::success( sprintf(
                 /* translators: 1: snapshot file name, 2: number of roles it holds. */
-                _n( 'Snapshot created: %1$s (%2$d role).', 'Snapshot created: %1$s (%2$d roles).', $result['count'], 'ubac-role-backup' ),
+                _n( 'Snapshot created: %1$s (%2$d role).', 'Snapshot created: %1$s (%2$d roles).', $result['count'], 'dahuconcept-role-backup' ),
                 $result['file'],
                 $result['count']
             ) );
@@ -117,21 +117,21 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
             $diff = ubac_role_backup_diff( $snapshot );
 
-            $none = __( '(none)', 'ubac-role-backup' );
+            $none = __( '(none)', 'dahuconcept-role-backup' );
 
             WP_CLI::log( sprintf(
                 /* translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-                __( 'Roles missing (would be recreated): %s', 'ubac-role-backup' ),
+                __( 'Roles missing (would be recreated): %s', 'dahuconcept-role-backup' ),
                 empty( $diff['manquants'] ) ? $none : implode( ', ', $diff['manquants'] )
             ) );
             WP_CLI::log( sprintf(
                 /* translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-                __( 'Roles missing from the snapshot: %s', 'ubac-role-backup' ),
+                __( 'Roles missing from the snapshot: %s', 'dahuconcept-role-backup' ),
                 empty( $diff['nouveaux'] ) ? $none : implode( ', ', $diff['nouveaux'] )
             ) );
             WP_CLI::log( sprintf(
                 /* translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-                __( 'Roles common to both: %s', 'ubac-role-backup' ),
+                __( 'Roles common to both: %s', 'dahuconcept-role-backup' ),
                 empty( $diff['communs'] ) ? $none : implode( ', ', $diff['communs'] )
             ) );
         }
@@ -181,19 +181,19 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
             $diff = ubac_role_backup_diff( $snapshot );
 
-            $none = __( '(none)', 'ubac-role-backup' );
+            $none = __( '(none)', 'dahuconcept-role-backup' );
 
             if ( $full ) {
                 WP_CLI::warning( sprintf(
                     /* translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-                    __( 'FULL mode. Roles that will be DELETED: %s', 'ubac-role-backup' ),
+                    __( 'FULL mode. Roles that will be DELETED: %s', 'dahuconcept-role-backup' ),
                     empty( $diff['nouveaux'] ) ? $none : implode( ', ', $diff['nouveaux'] )
                 ) );
-                WP_CLI::confirm( __( 'Replace every role with the snapshot?', 'ubac-role-backup' ), $assoc_args );
+                WP_CLI::confirm( __( 'Replace every role with the snapshot?', 'dahuconcept-role-backup' ), $assoc_args );
             } else {
                 WP_CLI::log( sprintf(
                     /* translators: %s: comma-separated role slugs, or the "(none)" placeholder. */
-                    __( 'Additive mode. Roles to recreate: %s', 'ubac-role-backup' ),
+                    __( 'Additive mode. Roles to recreate: %s', 'dahuconcept-role-backup' ),
                     empty( $diff['manquants'] ) ? $none : implode( ', ', $diff['manquants'] )
                 ) );
             }
@@ -205,21 +205,21 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
             }
 
             if ( empty( $result['restaures'] ) ) {
-                WP_CLI::success( isset( $result['message'] ) ? $result['message'] : __( 'Nothing to restore.', 'ubac-role-backup' ) );
+                WP_CLI::success( isset( $result['message'] ) ? $result['message'] : __( 'Nothing to restore.', 'dahuconcept-role-backup' ) );
                 return;
             }
 
             if ( ! empty( $result['echecs'] ) ) {
                 WP_CLI::warning( sprintf(
                     /* translators: %s: comma-separated slugs of the roles that could not be recreated. */
-                    __( 'Failures: %s', 'ubac-role-backup' ),
+                    __( 'Failures: %s', 'dahuconcept-role-backup' ),
                     implode( ', ', $result['echecs'] )
                 ) );
             }
 
             WP_CLI::success( sprintf(
                 /* translators: %s: comma-separated slugs of the roles that were recreated. */
-                __( 'Roles restored: %s', 'ubac-role-backup' ),
+                __( 'Roles restored: %s', 'dahuconcept-role-backup' ),
                 implode( ', ', $result['restaures'] )
             ) );
         }

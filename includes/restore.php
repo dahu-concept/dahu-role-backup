@@ -93,7 +93,7 @@ function ubac_role_backup_restore( $filename, $full = false ) {
             'mode'      => 'additif',
             'restaures' => array(),
             'echecs'    => array(),
-            'message'   => __( 'No role missing: nothing to restore.', 'ubac-role-backup' ),
+            'message'   => __( 'No role missing: nothing to restore.', 'dahuconcept-role-backup' ),
         );
     }
 
