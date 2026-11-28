@@ -113,7 +113,14 @@ function ubac_role_backup_handle_restore() {
         wp_die( esc_html__( 'You are not allowed to access this page.', 'dahuconcept-role-backup' ) );
     }
 
-    $file = isset( $_POST['fichier'] ) ? basename( wp_unslash( $_POST['fichier'] ) ) : '';
+    // Read before check_admin_referer(), because the nonce action is built
+    // from this very name. sanitize_file_name() leaves a legitimate snapshot
+    // name untouched -- they all match
+    // ubac-roles-<type>-<date>-<time>-r<n>-<checksum>.json -- and the real
+    // gate is ubac_role_backup_load(), which takes basename() again and then
+    // refuses anything that does not match that pattern.
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- the nonce is checked on the very next line, against an action that includes this name.
+    $file = isset( $_POST['fichier'] ) ? basename( sanitize_file_name( wp_unslash( $_POST['fichier'] ) ) ) : '';
 
     check_admin_referer( 'ubac_role_backup_restore_' . $file );
 
@@ -159,13 +166,28 @@ function ubac_role_backup_datetime_format() {
  * @return void
  */
 function ubac_role_backup_render_notices() {
+    /*
+     * Read-only flags left in the URL by the redirect that follows an action.
+     * The action itself is nonce-checked where it happens; requiring a nonce
+     * to read back its outcome would protect nothing, and the three values
+     * are only ever echoed, escaped, into a banner.
+     */
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- see above.
     if ( empty( $_GET['ubac_msg'] ) ) {
         return;
     }
 
-    $msg    = sanitize_key( wp_unslash( $_GET['ubac_msg'] ) );
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- same read-only flag.
+    $msg = sanitize_key( wp_unslash( $_GET['ubac_msg'] ) );
+
+    // Decoded first, then cleaned: cleaning before decoding would let an
+    // encoded tag through. The sniff cannot see a sanitiser wrapped around
+    // rawurldecode(), hence the annotation.
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- same read-only flag; sanitize_text_field() is applied, after decoding.
     $detail = isset( $_GET['ubac_detail'] ) ? sanitize_text_field( rawurldecode( wp_unslash( $_GET['ubac_detail'] ) ) ) : '';
-    $mode   = isset( $_GET['ubac_mode'] ) ? sanitize_key( wp_unslash( $_GET['ubac_mode'] ) ) : '';
+
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- same read-only flag.
+    $mode = isset( $_GET['ubac_mode'] ) ? sanitize_key( wp_unslash( $_GET['ubac_mode'] ) ) : '';
 
     switch ( $msg ) {
         case 'instantane':
@@ -227,7 +249,11 @@ function ubac_role_backup_render_page() {
 
     ubac_role_backup_render_notices();
 
-    $preview = isset( $_GET['apercu'] ) ? basename( wp_unslash( $_GET['apercu'] ) ) : '';
+    // Read-only: which snapshot to display. No nonce, because nothing is
+    // changed; the name goes to ubac_role_backup_load(), which validates it
+    // against the snapshot pattern before any file is opened.
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen state, validated downstream.
+    $preview = isset( $_GET['apercu'] ) ? basename( sanitize_file_name( wp_unslash( $_GET['apercu'] ) ) ) : '';
 
     if ( $preview ) {
         ubac_role_backup_render_preview( $preview );
